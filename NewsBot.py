@@ -19,6 +19,12 @@ def get_horoscope(znak):
     soup = html.select('p')
     return soup1, soup
 
+def get_currency():
+    r = requests.get("https://invest.yandex.ru/catalog/currency/")
+    html = BS(r.content, "html.parser")
+    a = html.find_all(class_="JGT__mSaFfXxcOb2oGto")
+    b = html.find_all(class_="FKk_VD_UBO4sS_Tt6IHI")
+    return [(a[0], b[0]), (a[1], b[1])]
 
 if dt.datetime.now().hour == 9:
     for i in BotDB.get_id():
@@ -46,6 +52,8 @@ def chat(message):
         BotDB.update_status(message.chat.id, "menu")
     if message.text == "Гороскопы🪐":
         BotDB.update_status(message.chat.id, "horoscope")
+    if message.text == "Курсы валют💰":
+        BotDB.update_status(message.chat.id, "curr")
     if message.text in btns:
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         back = types.KeyboardButton(text="Меню↩")
@@ -131,7 +139,8 @@ def chat(message):
     if BotDB.get_status(message.chat.id) == "menu":
         markup = types.ReplyKeyboardMarkup(row_width=3, resize_keyboard=True)
         btn1 = types.KeyboardButton(text="Гороскопы🪐")
-        markup.add(btn1)
+        btn2 = types.KeyboardButton(text="Курсы валют💰")
+        markup.add(btn1, btn2)
         bot.send_message(message.chat.id, "Вы в меню", reply_markup=markup)
 
     if BotDB.get_status(message.chat.id) == "horoscope":
@@ -151,6 +160,15 @@ def chat(message):
         markup.add(btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12)
         bot.send_message(message.chat.id, "Выберите знак задиака для которого хотите узнать гороскоп",
                          reply_markup=markup)
+
+    if BotDB.get_status(message.chat.id) == "curr":
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        back = types.KeyboardButton(text="Меню↩")
+        markup.add(back)
+        bot.send_message(message.chat.id,
+                         f"""Доллар💵: {get_currency()[0][0]}, изменение цены за день: {get_currency()[0][1]}
+                         Евро💶: {get_currency()[1][0]}, изменение цены за день: {get_currency()[1][1]}""", reply_markup=markup)
+        BotDB.update_status(message.chat.id, "pass")
 
 
 if __name__ == '__main__':
