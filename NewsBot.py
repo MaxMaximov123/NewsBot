@@ -30,21 +30,42 @@ def get_currency():
 
 if dt.datetime.now().hour == 9:
     for i in BotDB.get_id():
-        bot.send_message(i[0], get_horoscope(BotDB.get_znak(i[0]))[0])
-        for j in get_horoscope(BotDB.get_znak(i[0]))[1]:
-            bot.send_message(i[0], j)
+        if BotDB.get_znak(i[0]) in btns:
+            bot.send_message(i[0], get_horoscope(BotDB.get_znak(i[0]))[0])
+            for j in get_horoscope(BotDB.get_znak(i[0]))[1]:
+                bot.send_message(i[0], j)
+        else:
+            bot.send_message(i[0], "У вас не подключена рассылка, чтобы её активировать введите команду '/активировать'")
 
 
 @bot.message_handler(commands=["start"])
 def welcome(message):
     bot.send_message(message.chat.id,
-                     "{0.first_name}, здравствуй, я новостной бот. Напишите мне день и месяц вашего рождения (через точку), чтобы получать гороскоп".format(
+                     "{0.first_name}, здравствуйте, я новостной бот. Напишите мне день и месяц вашего рождения (через точку), чтобы получать гороскоп".format(
                          message.from_user))
     if not BotDB.user_exists(message.chat.id):
         BotDB.add_user(message.chat.id, "welcome", "{0.first_name}".format(message.from_user),
                        message.from_user.username, "pass")
     else:
         BotDB.update_status(message.chat.id, "welcome")
+
+
+@bot.message_handler(commands=["активировать"])
+def welcome(message):
+    bot.send_message(message.chat.id,
+                     "{0.first_name}, напишите мне день и месяц вашего рождения (через точку), чтобы получать гороскоп".format(
+                         message.from_user))
+    if not BotDB.user_exists(message.chat.id):
+        BotDB.add_user(message.chat.id, "welcome", "{0.first_name}".format(message.from_user),
+                       message.from_user.username, "pass")
+    else:
+        BotDB.update_status(message.chat.id, "welcome")
+
+
+@bot.message_handlers(commands=["'отказаться"])
+def cancel(message):
+    BotDB.update_znak(message.chat.id, "pass")
+    bot.send_message(message.chat.id, "Рассылка отменена")
 
 
 @bot.message_handler(content_types=["text"])
@@ -69,70 +90,71 @@ def chat(message):
         if len(data) == 2 and 0 < data[0] < 32 and 0 < data[1] < 13:
             znak = "Овен"
             if (21 <= data[0] <= 31 and data[1] == 3) or (data[1] == 4 and 1 <= data[0] <= 19):
-                znak = "Овен"
+                znak = btns[0]
 
             elif (data[0] >= 20 and data[0] <= 30 and data[1] == 4) or (
                     data[1] == 5 and data[0] >= 1 and data[0] <= 20):
 
-                znak = "Телец"
+                znak = btns[1]
 
             elif (data[0] >= 21 and data[0] <= 31 and data[1] == 5) or (
                     data[1] == 6 and data[0] >= 1 and data[0] <= 21):
 
-                znak = "Близнецы"
+                znak = btns[2]
 
             elif (data[0] >= 22 and data[0] <= 30 and data[1] == 6) or (
                     data[1] == 7 and data[0] >= 1 and data[0] <= 22):
 
-                znak = "Рак"
+                znak = btns[3]
 
             elif (data[0] >= 23 and data[0] <= 31 and data[1] == 7) or (
                     data[1] == 8 and data[0] >= 1 and data[0] <= 22):
 
-                znak = "Лев"
+                znak = btns[4]
 
             elif (data[0] >= 23 and data[0] <= 31 and data[1] == 8) or (
                     data[1] == 9 and data[0] >= 1 and data[0] <= 22):
 
-                znak = "Дева"
+                znak = btns[5]
 
             elif (data[0] >= 23 and data[0] <= 30 and data[1] == 9) or (
                     data[1] == 10 and data[0] >= 1 and data[0] <= 23):
 
-                znak = "Весы"
+                znak = btns[6]
 
             elif (24 <= data[0] <= 31 and data[1] == 10) or (
                     data[1] == 11 and 1 <= data[0] <= 22):
 
-                znak = "Скорпион"
+                znak = btns[7]
 
             elif (23 <= data[0] <= 30 and data[1] == 11) or (
                     data[1] == 12 and 1 <= data[0] <= 21):
 
-                znak = "Стрелец"
+                znak = btns[8]
 
             elif (22 <= data[0] <= 31 and data[1] == 12) or (
                     data[1] == 1 and 1 <= data[0] <= 20):
 
-                znak = "Козерог"
+                znak = btns[9]
 
             elif (21 <= data[0] <= 31 and data[1] == 1) or (
                     data[1] == 2 and 1 <= data[0] <= 18):
 
-                znak = "Водолей"
+                znak = btns[10]
 
             elif (19 <= data[0] <= 29 and data[1] == 2) or (
                     data[1] == 3 and 1 <= data[0] <= 20):
 
-                znak = "Рыбы"
+                znak = btns[11]
 
             markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
             btn1 = types.KeyboardButton(text="Меню↩")
             markup.add(btn1)
-            bot.send_message(message.chat.id, f"А вы знали, что вы {znak}")
+            bot.send_message(message.chat.id, f"А вы знали, что Вы {znak}?")
             BotDB.update_status(message.chat.id, "pass")
             BotDB.update_znak(message.chat.id, znak)
-            bot.send_message(message.chat.id, "Теперь каждое утро в 9 часов вы будете получать актуальный гороскоп",
+            bot.send_message(message.chat.id, "Теперь каждое утро в 9 часов вы будете получать актуальный гороскоп,"
+                                              " чтобы отменить рассылку введите команду '/отказаться'",
                              reply_markup=markup)
         else:
             bot.send_message(message.chat.id, "Введены невенрные данные, попробуйте еще раз")
@@ -159,7 +181,7 @@ def chat(message):
         btn11 = types.KeyboardButton(text=btns[10])
         btn12 = types.KeyboardButton(text=btns[11])
         markup.add(btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12)
-        bot.send_message(message.chat.id, "Выберите знак задиака для которого хотите узнать гороскоп",
+        bot.send_message(message.chat.id, "Выберите знак зодиака для которого хотите узнать гороскоп",
                          reply_markup=markup)
 
     if BotDB.get_status(message.chat.id) == "curr":
