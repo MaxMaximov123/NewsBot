@@ -67,7 +67,7 @@ def cancel(message):
     markup.add(back)
     BotDB.update_znak(message.chat.id, "pass")
     bot.send_message(message.chat.id, "Рассылка отменена")
-    bot.send_message(i[0], "У вас не подключена рассылка, чтобы её активировать введите команду '/активировать'", reply_markup=markup)
+    bot.send_message(message.chat.id, "У вас не подключена рассылка, чтобы её активировать введите команду '/активировать'", reply_markup=markup)
 
 
 @bot.message_handler(content_types=["text"])
