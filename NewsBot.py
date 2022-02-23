@@ -51,7 +51,7 @@ def welcome(message):
 
 
 @bot.message_handler(commands=["активировать"])
-def welcome(message):
+def activate(message):
     bot.send_message(message.chat.id,
                      "{0.first_name}, напишите мне день и месяц вашего рождения (через точку), чтобы получать гороскоп".format(
                          message.from_user))
@@ -62,7 +62,7 @@ def welcome(message):
         BotDB.update_status(message.chat.id, "welcome")
 
 
-@bot.message_handlers(commands=["отказаться"])
+@bot.message_handler(commands=["отказаться"])
 def cancel(message):
     BotDB.update_znak(message.chat.id, "pass")
     bot.send_message(message.chat.id, "Рассылка отменена")
