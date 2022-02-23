@@ -34,8 +34,6 @@ if dt.datetime.now().hour == 9:
             bot.send_message(i[0], get_horoscope(BotDB.get_znak(i[0]))[0])
             for j in get_horoscope(BotDB.get_znak(i[0]))[1]:
                 bot.send_message(i[0], j)
-        else:
-            bot.send_message(i[0], "У вас не подключена рассылка, чтобы её активировать введите команду '/активировать'")
 
 
 @bot.message_handler(commands=["start"])
@@ -64,8 +62,12 @@ def activate(message):
 
 @bot.message_handler(commands=["отказаться"])
 def cancel(message):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    back = types.KeyboardButton(text="Меню↩")
+    markup.add(back)
     BotDB.update_znak(message.chat.id, "pass")
     bot.send_message(message.chat.id, "Рассылка отменена")
+    bot.send_message(i[0], "У вас не подключена рассылка, чтобы её активировать введите команду '/активировать'", reply_markup=markup)
 
 
 @bot.message_handler(content_types=["text"])
