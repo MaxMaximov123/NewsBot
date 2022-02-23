@@ -166,8 +166,8 @@ def chat(message):
         back = types.KeyboardButton(text="Меню↩")
         markup.add(back)
         bot.send_message(message.chat.id,
-                         f"""Доллар💵: {get_currency()[0][0]}, изменение цены за день: {get_currency()[0][1]}
-                         Евро💶: {get_currency()[1][0]}, изменение цены за день: {get_currency()[1][1]}""", reply_markup=markup)
+                         f"""Доллар💵: {get_currency()[0][0].text}, изменение цены за день: {get_currency()[0][1].text}
+                         Евро💶: {get_currency()[1][0].text}, изменение цены за день: {get_currency()[1][1].text}""", reply_markup=markup)
         BotDB.update_status(message.chat.id, "pass")
 
 
