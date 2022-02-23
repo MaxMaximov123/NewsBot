@@ -1,0 +1,7 @@
+pyTelegramBotAPI==4.3.1
+config==0.5.1
+psycopg2==2.9.3
+beautifulsoup4==4.10.0
+requests==2.27.1
+
+
