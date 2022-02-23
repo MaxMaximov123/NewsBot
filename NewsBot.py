@@ -20,7 +20,7 @@ def get_horoscope(znak):
     return soup1, soup
 
 
-if dt.datetime.now().hour == 9 or True:
+if dt.datetime.now().hour == 9:
     for i in BotDB.get_id():
         bot.send_message(i[0], get_horoscope(BotDB.get_znak(i[0]))[0])
         for j in get_horoscope(BotDB.get_znak(i[0]))[1]:
