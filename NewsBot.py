@@ -62,7 +62,7 @@ def welcome(message):
         BotDB.update_status(message.chat.id, "welcome")
 
 
-@bot.message_handlers(commands=["'отказаться"])
+@bot.message_handlers(commands=["отказаться"])
 def cancel(message):
     BotDB.update_znak(message.chat.id, "pass")
     bot.send_message(message.chat.id, "Рассылка отменена")
