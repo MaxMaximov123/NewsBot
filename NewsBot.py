@@ -19,6 +19,7 @@ def get_horoscope(znak):
     soup = html.select('p')
     return soup1, soup
 
+
 def get_currency():
     r = requests.get("https://invest.yandex.ru/catalog/currency/")
     html = BS(r.content, "html.parser")
@@ -26,12 +27,12 @@ def get_currency():
     b = html.find_all(class_="FKk_VD_UBO4sS_Tt6IHI")
     return [(a[0], b[0]), (a[1], b[1])]
 
+
 if dt.datetime.now().hour == 9:
     for i in BotDB.get_id():
         bot.send_message(i[0], get_horoscope(BotDB.get_znak(i[0]))[0])
         for j in get_horoscope(BotDB.get_znak(i[0]))[1]:
             bot.send_message(i[0], j)
-
 
 
 @bot.message_handler(commands=["start"])
@@ -166,8 +167,8 @@ def chat(message):
         back = types.KeyboardButton(text="Меню↩")
         markup.add(back)
         bot.send_message(message.chat.id,
-                         f"""Доллар💵: {get_currency()[0][0].text}, динамика за день: {get_currency()[0][1].text}
-                         Евро💶: {get_currency()[1][0].text}, динамика за день: {get_currency()[1][1].text}""", reply_markup=markup)
+                         f"Доллар💵: {get_currency()[0][0].text}, динамика: {get_currency()[0][1].text}Евро💶: {get_currency()[1][0].text}, динамика: {get_currency()[1][1].text}",
+                         reply_markup=markup)
         BotDB.update_status(message.chat.id, "pass")
 
 
