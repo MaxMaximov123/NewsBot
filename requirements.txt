@@ -5,3 +5,4 @@ beautifulsoup4==4.10.0
 requests==2.27.1
 schedule==1.1.0
 fake_user_agent==0.0.15
+fake-useragent==0.1.11
