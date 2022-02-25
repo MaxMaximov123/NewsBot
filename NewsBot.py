@@ -7,6 +7,8 @@ from telebot import types
 from schedule import every, run_pending
 import time
 from threading import Thread
+import random
+from fake_useragent import UserAgent
 
 bot = telebot.TeleBot(token)
 BotDB = BotDB()
@@ -39,7 +41,7 @@ def get_horoscope(znak):
 
 
 def get_news(url):
-    r = requests.get(url)
+    r = requests.get(url, headers={'User-Agent': UserAgent().chrome})
     html = BS(r.content, "html.parser")
     news = html.find_all(class_="mg-card__title")
     return news
