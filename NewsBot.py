@@ -4,12 +4,30 @@ from bs4 import BeautifulSoup as BS
 from config import *
 from db import *
 from telebot import types
-import datetime as dt
+from schedule import every, run_pending
+import time
+from threading import Thread
 
 bot = telebot.TeleBot(token)
 BotDB = BotDB()
 btns = list(links.keys())
 
+
+def get_currency():
+    r = requests.get("https://invest.yandex.ru/catalog/currency/usd/")
+    html = BS(r.content, "html.parser")
+    dolVal = html.find_all(class_="QV5TZ0Aew_2aahfCgGmv")[0].text
+    dolProc = html.find_all(class_="rzv7e6OPChq71rCQBr9H _9RS0xgK34zINnxUjOgH")[0].text.split("  ₽")
+
+    r = requests.get("https://invest.yandex.ru/catalog/currency/eur/")
+    html = BS(r.content, "html.parser")
+    euVal = html.find_all(class_="QV5TZ0Aew_2aahfCgGmv")[0].text
+    euProc = html.find_all(class_="rzv7e6OPChq71rCQBr9H _9RS0xgK34zINnxUjOgH")[0].text.split("  ₽")
+
+    return ((dolVal, dolProc), (euVal, euProc))
+
+
+# print("−" in get_currency()[0][1][0])
 
 def get_horoscope(znak):
     r = requests.get(links[znak])
@@ -20,20 +38,53 @@ def get_horoscope(znak):
     return soup1, soup
 
 
-def get_currency():
-    r = requests.get("https://invest.yandex.ru/catalog/currency/")
+def get_news(url):
+    r = requests.get(url)
     html = BS(r.content, "html.parser")
-    a = html.find_all(class_="JGT__mSaFfXxcOb2oGto")
-    b = html.find_all(class_="FKk_VD_UBO4sS_Tt6IHI")
-    return [(a[0], b[0]), (a[1], b[1])]
+    news = html.find_all(class_="mg-card__title")
+    return news
 
 
-if dt.datetime.now().hour == 9:
+def send_news(chat_id, topic, article):
+    markup = types.InlineKeyboardMarkup()
+    skip = types.InlineKeyboardButton(text='Не интересно', callback_data="skip")
+    det = types.InlineKeyboardButton(text='Подробнее', url=topic)
+    markup.add(skip, det)
+    markup.add(types.KeyboardButton(text="Меню↩"))
+    if article < len(get_news(topic)) - 1:
+        bot.send_message(chat_id, get_news(topic)[article].text, reply_markup=markup)
+        BotDB.update_article(chat_id, article + 1)
+        BotDB.update_topic(chat_id, topic)
+    else:
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        markup.add(types.KeyboardButton(text="Меню↩"))
+        bot.send_message(chat_id, "Новости на эту тему закончились", reply_markup=markup)
+
+
+def send_hor():
     for i in BotDB.get_id():
         if BotDB.get_znak(i[0]) in btns:
             bot.send_message(i[0], get_horoscope(BotDB.get_znak(i[0]))[0])
             for j in get_horoscope(BotDB.get_znak(i[0]))[1]:
                 bot.send_message(i[0], j)
+
+
+every().day.at("08:00").do(send_hor)
+
+
+def work():
+    while True:
+        run_pending()
+        time.sleep(1)
+
+
+th = Thread(target=work)
+th.start()
+
+
+# while True:
+#   run_pending()
+#  time.sleep(1)
 
 
 @bot.message_handler(commands=["start"])
@@ -67,7 +118,20 @@ def cancel(message):
     markup.add(back)
     BotDB.update_znak(message.chat.id, "pass")
     bot.send_message(message.chat.id, "Рассылка отменена")
-    bot.send_message(message.chat.id, "У вас не подключена рассылка, чтобы её активировать введите команду '/активировать'", reply_markup=markup)
+    bot.send_message(message.chat.id,
+                     "У вас не подключена рассылка, чтобы её активировать введите команду '/активировать'",
+                     reply_markup=markup)
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback(call):
+    if call.data == "skip":
+        send_news(call.message.chat.id, BotDB.get_topic(call.message.chat.id), BotDB.get_article(call.message.chat.id))
+    else:
+        BotDB.update_status(call.message.chat.id, "pass")
+        bot.delete_message(call.message.chat.id, call.message.message_id)
+        BotDB.update_article(call.message.chat.id, 0)
+        send_news(call.message.chat.id, call.data, 0)
 
 
 @bot.message_handler(content_types=["text"])
@@ -76,6 +140,8 @@ def chat(message):
         BotDB.update_status(message.chat.id, "menu")
     if message.text == "Гороскопы🪐":
         BotDB.update_status(message.chat.id, "horoscope")
+    if message.text == "Новости📰":
+        BotDB.update_status(message.chat.id, "news")
     if message.text == "Курсы валют💰":
         BotDB.update_status(message.chat.id, "curr")
     if message.text in btns:
@@ -161,11 +227,35 @@ def chat(message):
         else:
             bot.send_message(message.chat.id, "Введены невенрные данные, попробуйте еще раз")
 
+    if BotDB.get_status(message.chat.id) == "news":
+        markup = types.InlineKeyboardMarkup()
+        btn_1 = types.InlineKeyboardButton(text='Казань🕌', callback_data="https://yandex.ru/news/region/kazan")
+        btn_2 = types.InlineKeyboardButton(text='Коронавирус🦠',
+                                           callback_data="https://yandex.ru/news/rubric/koronavirus")
+        btn_3 = types.InlineKeyboardButton(text='Политика🇺🇳', callback_data="https://yandex.ru/news/rubric/politics")
+        btn_4 = types.InlineKeyboardButton(text='Экономика📈', callback_data="https://yandex.ru/news/rubric/business")
+        btn_5 = types.InlineKeyboardButton(text='Спорт⚽️',
+                                           callback_data="https://yandex.ru/sport?utm_source=yxnews&utm_medium=desktop")
+        btn_6 = types.InlineKeyboardButton(text='Происшествия🚨',
+                                           callback_data="https://yandex.ru/news/rubric/incident")
+        btn_7 = types.InlineKeyboardButton(text='Культура🎨', callback_data="https://yandex.ru/news/rubric/culture")
+        btn_8 = types.InlineKeyboardButton(text='Технологии💻', callback_data="https://yandex.ru/news/rubric/computers")
+        markup.add(btn_1)
+        markup.add(btn_2)
+        markup.add(btn_3)
+        markup.add(btn_4)
+        markup.add(btn_5)
+        markup.add(btn_6)
+        markup.add(btn_7)
+        markup.add(btn_8)
+        bot.send_message(message.chat.id, "Выберите тему", reply_markup=markup)
+
     if BotDB.get_status(message.chat.id) == "menu":
         markup = types.ReplyKeyboardMarkup(row_width=3, resize_keyboard=True)
         btn1 = types.KeyboardButton(text="Гороскопы🪐")
         btn2 = types.KeyboardButton(text="Курсы валют💰")
-        markup.add(btn1, btn2)
+        btn3 = types.KeyboardButton(text="Новости📰")
+        markup.add(btn1, btn2, btn3)
         bot.send_message(message.chat.id, "Вы в меню", reply_markup=markup)
 
     if BotDB.get_status(message.chat.id) == "horoscope":
@@ -182,7 +272,8 @@ def chat(message):
         btn10 = types.KeyboardButton(text=btns[9])
         btn11 = types.KeyboardButton(text=btns[10])
         btn12 = types.KeyboardButton(text=btns[11])
-        markup.add(btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12)
+        back = types.KeyboardButton(text="Меню↩")
+        markup.add(btn1, btn2, btn3, btn4, btn5, btn6, btn7, btn8, btn9, btn10, btn11, btn12, back)
         bot.send_message(message.chat.id, "Выберите знак зодиака для которого хотите узнать гороскоп",
                          reply_markup=markup)
 
@@ -190,11 +281,20 @@ def chat(message):
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         back = types.KeyboardButton(text="Меню↩")
         markup.add(back)
-        bot.send_message(message.chat.id,
-                         f"""Доллар💵: {get_currency()[0][0].text}, за день: {get_currency()[0][1].text}
-                         
-Евро💶: {get_currency()[1][0].text}, за день: {get_currency()[1][1].text}""",
-                         reply_markup=markup)
+        znach = get_currency()
+        if "−" in znach[0][1][0]:
+            dol = f"Доллар💵: {znach[0][0]}, за день: {znach[0][1][1]}🔻"
+        else:
+            dol = f"Доллар💵: {znach[0][0]}, за день: {znach[0][1][1]}🔺"
+
+        if "−" in znach[1][1][0]:
+            eu = f"Евро💶: {znach[1][0]}, за день: {znach[1][1][1]}🔻"
+        else:
+            eu = f"Евро💶: {znach[1][0]}, за день: {znach[1][1][1]}🔺"
+
+        bot.send_message(message.chat.id, f"""{dol}
+
+{eu}""", reply_markup=markup)
         BotDB.update_status(message.chat.id, "pass")
 
 

@@ -19,7 +19,7 @@ import psycopg2
 #     #                       USERNAME      TEXT); '''
 #     # Выполнение команды: это создает новую таблицу
 #     # cursor.execute(create_table_query)
-#     cursor.execute("DELETE FROM trackers WHERE id = 1387680086")
+#     cursor.execute("""ALTER TABLE trackers ADD COLUMN article INTEGER;""")
 #     conn.commit()
 #     print(546)
 # except (Exception, psycopg2.Error) as error:
@@ -66,4 +66,20 @@ class BotDB:
 
     def get_znak(self, id):
         self.cursor.execute("SELECT znak FROM trackers WHERE id = %s", (id,))
+        return self.cursor.fetchone()[0]
+
+    def update_topic(self, id, topic):
+        self.cursor.execute("UPDATE trackers SET topic = %s WHERE id = %s", (topic, id))
+        return self.conn.commit()
+
+    def update_article(self, id, article):
+        self.cursor.execute("UPDATE trackers SET article = %s WHERE id = %s", (article, id))
+        return self.conn.commit()
+
+    def get_article(self, id):
+        self.cursor.execute("SELECT article FROM trackers WHERE id = %s", (id,))
+        return self.cursor.fetchone()[0]
+
+    def get_topic(self, id):
+        self.cursor.execute("SELECT topic FROM trackers WHERE id = %s", (id,))
         return self.cursor.fetchone()[0]
