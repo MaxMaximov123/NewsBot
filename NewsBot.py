@@ -44,9 +44,10 @@ headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
 
 def get_news(url):
     r = requests.get(url, headers=headers, cookies=cookies)
-    html = BS(r.text, "lxml")
+    html = BS(r.text, "html.parser")
     news = html.find_all(class_="mg-card__title")
-    return news
+    ur = html.find_all(class_="mg-card__link")
+    return news, ur
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -63,11 +64,11 @@ def callback(call):
 def send_news(chat_id, topic, article):
     markup = types.InlineKeyboardMarkup()
     skip = types.InlineKeyboardButton(text="Дальше", callback_data="skip")
-    det = types.InlineKeyboardButton(text='Подробнее', url=topic)
+    det = types.InlineKeyboardButton(text='Подробнее', url=htmls[topic][1][article].get('href'))
     markup.add(det, skip)
     #markup.add(types.KeyboardButton(text="Меню↩"))
-    if article < len(htmls[topic]) - 1:
-        bot.send_message(chat_id, htmls[topic][article].text, reply_markup=markup)
+    if article < len(htmls[topic][0]) - 1:
+        bot.send_message(chat_id, htmls[topic][0][article].text, reply_markup=markup)
         BotDB.update_article(chat_id, article + 1)
         BotDB.update_topic(chat_id, topic)
     else:
@@ -95,7 +96,8 @@ def work():
 
 def save_html():
     for i in urls:
-        htmls[i] = get_news(i)
+        news, ur = get_news(i)
+        htmls[i] = (news, ur)
     time.sleep(600)
 
 
