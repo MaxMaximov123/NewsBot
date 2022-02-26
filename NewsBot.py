@@ -42,10 +42,9 @@ headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/
 
 
 def get_news(url):
-    r = requests.get(url, headers=headers)
+    r = requests.get(url, headers=headers, cookies=cookies)
     html = BS(r.text, "lxml")
     news = html.find_all(class_="mg-card__title")
-    print(html)
     return news
 
 
@@ -63,9 +62,9 @@ def callback(call):
 def send_news(chat_id, topic, article):
     markup = types.InlineKeyboardMarkup()
     skip = types.InlineKeyboardButton(text="Дальше", callback_data="skip")
-    #det = types.InlineKeyboardButton(text='Подробнее', url=topic)
-    markup.add(skip)#, det)
-    markup.add(types.KeyboardButton(text="Меню↩"))
+    det = types.InlineKeyboardButton(text='Подробнее', url=topic)
+    markup.add(det, skip)
+    #markup.add(types.KeyboardButton(text="Меню↩"))
     if article < len(get_news(topic)) - 1:
         bot.send_message(chat_id, get_news(topic)[article].text, reply_markup=markup)
         BotDB.update_article(chat_id, article + 1)
