@@ -7,8 +7,6 @@ from telebot import types
 from schedule import every, run_pending
 import time
 from threading import Thread
-import random
-from fake_useragent import UserAgent
 
 bot = telebot.TeleBot(token)
 BotDB = BotDB()
@@ -40,18 +38,33 @@ def get_horoscope(znak):
     return soup1, soup
 
 
+headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.174 YaBrowser/22.1.3.848 Yowser/2.5 Safari/537.36'}
+
+
 def get_news(url):
-    r = requests.get(url, headers={'User-Agent': UserAgent().chrome})
-    html = BS(r.content, "html.parser")
+    r = requests.get(url, headers=headers)
+    html = BS(r.text, "lxml")
     news = html.find_all(class_="mg-card__title")
+    print(html)
     return news
+
+
+@bot.callback_query_handler(func=lambda call: True)
+def callback(call):
+    if call.data == "skip":
+        send_news(call.message.chat.id, BotDB.get_topic(call.message.chat.id), BotDB.get_article(call.message.chat.id))
+    else:
+        BotDB.update_status(call.message.chat.id, "pass")
+        bot.delete_message(call.message.chat.id, call.message.message_id)
+        BotDB.update_article(call.message.chat.id, 0)
+        send_news(call.message.chat.id, call.data, 0)
 
 
 def send_news(chat_id, topic, article):
     markup = types.InlineKeyboardMarkup()
-    skip = types.InlineKeyboardButton(text='Не интересно', callback_data="skip")
-    det = types.InlineKeyboardButton(text='Подробнее', url=topic)
-    markup.add(skip, det)
+    skip = types.InlineKeyboardButton(text="Дальше", callback_data="skip")
+    #det = types.InlineKeyboardButton(text='Подробнее', url=topic)
+    markup.add(skip)#, det)
     markup.add(types.KeyboardButton(text="Меню↩"))
     if article < len(get_news(topic)) - 1:
         bot.send_message(chat_id, get_news(topic)[article].text, reply_markup=markup)
@@ -123,17 +136,6 @@ def cancel(message):
     bot.send_message(message.chat.id,
                      "У вас не подключена рассылка, чтобы её активировать введите команду '/активировать'",
                      reply_markup=markup)
-
-
-@bot.callback_query_handler(func=lambda call: True)
-def callback(call):
-    if call.data == "skip":
-        send_news(call.message.chat.id, BotDB.get_topic(call.message.chat.id), BotDB.get_article(call.message.chat.id))
-    else:
-        BotDB.update_status(call.message.chat.id, "pass")
-        bot.delete_message(call.message.chat.id, call.message.message_id)
-        BotDB.update_article(call.message.chat.id, 0)
-        send_news(call.message.chat.id, call.data, 0)
 
 
 @bot.message_handler(content_types=["text"])
