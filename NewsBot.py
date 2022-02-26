@@ -11,6 +11,7 @@ from threading import Thread
 bot = telebot.TeleBot(token)
 BotDB = BotDB()
 btns = list(links.keys())
+htmls = {}
 
 
 def get_currency():
@@ -56,7 +57,7 @@ def callback(call):
         BotDB.update_status(call.message.chat.id, "pass")
         BotDB.update_article(call.message.chat.id, 0)
         send_news(call.message.chat.id, call.data, 0)
-    bot.delete_message(call.message.chat.id, call.message.message_id)
+        bot.delete_message(call.message.chat.id, call.message.message_id)
 
 
 def send_news(chat_id, topic, article):
@@ -65,8 +66,8 @@ def send_news(chat_id, topic, article):
     det = types.InlineKeyboardButton(text='Подробнее', url=topic)
     markup.add(det, skip)
     #markup.add(types.KeyboardButton(text="Меню↩"))
-    if article < len(get_news(topic)) - 1:
-        bot.send_message(chat_id, get_news(topic)[article].text, reply_markup=markup)
+    if article < len(htmls[topic]) - 1:
+        bot.send_message(chat_id, htmls[topic][article].text, reply_markup=markup)
         BotDB.update_article(chat_id, article + 1)
         BotDB.update_topic(chat_id, topic)
     else:
@@ -83,7 +84,7 @@ def send_hor():
                 bot.send_message(i[0], j)
 
 
-every().day.at("08:00").do(send_hor)
+every().day.at("05:00").do(send_hor)
 
 
 def work():
@@ -92,8 +93,19 @@ def work():
         time.sleep(1)
 
 
+def save_html():
+    for i in urls:
+        htmls[i] = get_news(i)
+    time.sleep(600)
+
+
 th = Thread(target=work)
 th.start()
+
+
+
+th_pars = Thread(target=save_html)
+th_pars.start()
 
 
 # while True:
