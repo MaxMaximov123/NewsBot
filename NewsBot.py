@@ -54,9 +54,9 @@ def callback(call):
         send_news(call.message.chat.id, BotDB.get_topic(call.message.chat.id), BotDB.get_article(call.message.chat.id))
     else:
         BotDB.update_status(call.message.chat.id, "pass")
-        bot.delete_message(call.message.chat.id, call.message.message_id)
         BotDB.update_article(call.message.chat.id, 0)
         send_news(call.message.chat.id, call.data, 0)
+    bot.delete_message(call.message.chat.id, call.message.message_id)
 
 
 def send_news(chat_id, topic, article):
