@@ -7,6 +7,7 @@ from telebot import types
 from schedule import every, run_pending
 import time
 from threading import Thread
+import pprint
 
 bot = telebot.TeleBot(token)
 BotDB = BotDB()
@@ -39,15 +40,31 @@ def get_horoscope(znak):
     return soup1, soup
 
 
-headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.174 YaBrowser/22.1.3.848 Yowser/2.5 Safari/537.36'}
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.174 YaBrowser/22.1.3.848 Yowser/2.5 Safari/537.36'}
 
 
 def get_news(url):
     r = requests.get(url, headers=headers, cookies=cookies)
     html = BS(r.text, "html.parser")
+    if url == "https://yandex.ru/news":
+        html = html.find(class_="mg-grid__row mg-grid__row_gap_8 news-top-flexible-stories news-app__top")
     news = html.find_all(class_="mg-card__title")
     ur = html.find_all(class_="mg-card__link")
     return news, ur
+
+
+def save_html():
+    global htmls
+    while True:
+        for i in urls:
+            news, ur = get_news(i)
+            htmls[i] = (news, ur)
+        time.sleep(600)
+
+
+th_pars = Thread(target=save_html)
+th_pars.start()
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -66,7 +83,7 @@ def send_news(chat_id, topic, article):
     skip = types.InlineKeyboardButton(text="Дальше", callback_data="skip")
     det = types.InlineKeyboardButton(text='Подробнее', url=htmls[topic][1][article].get('href'))
     markup.add(det, skip)
-    #markup.add(types.KeyboardButton(text="Меню↩"))
+    # markup.add(types.KeyboardButton(text="Меню↩"))
     if article < len(htmls[topic][0]) - 1:
         bot.send_message(chat_id, htmls[topic][0][article].text, reply_markup=markup)
         BotDB.update_article(chat_id, article + 1)
@@ -78,12 +95,38 @@ def send_news(chat_id, topic, article):
 
 
 def send_hor():
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    back = types.KeyboardButton(text="Меню↩")
+    markup.add(back)
     for i in BotDB.get_id():
+        bot.send_message(i[0], "Утренние новости☕️📰:", reply_markup=markup)
         if BotDB.get_znak(i[0]) in btns:
             bot.send_message(i[0], get_horoscope(BotDB.get_znak(i[0]))[0])
             for j in get_horoscope(BotDB.get_znak(i[0]))[1]:
                 bot.send_message(i[0], j)
+        bot.send_message(i[0], "Курс валют💰:")
+        znach = get_currency()
+        if "−" in znach[0][1][0]:
+            dol = f"Доллар💵: {znach[0][0]}, за день: {znach[0][1][1]}🔻"
+        else:
+            dol = f"Доллар💵: {znach[0][0]}, за день: {znach[0][1][1]}🔺"
 
+        if "−" in znach[1][1][0]:
+            eu = f"Евро💶: {znach[1][0]}, за день: {znach[1][1][1]}🔻"
+        else:
+            eu = f"Евро💶: {znach[1][0]}, за день: {znach[1][1][1]}🔺"
+
+        bot.send_message(i[0], f"""{dol}
+
+{eu}""")
+
+        bot.send_message(i[0], "Новости📰:")
+        for j in range(len(htmls["https://yandex.ru/news"][0])):
+            markup = types.InlineKeyboardMarkup()
+            det = types.InlineKeyboardButton(text='Подробнее', url=htmls["https://yandex.ru/news"][1][j].get('href'))
+            markup.add(det)
+            # markup.add(types.KeyboardButton(text="Меню↩"))
+            bot.send_message(i[0], htmls["https://yandex.ru/news"][0][j].text, reply_markup=markup)
 
 
 every().day.at("05:00").do(send_hor)
@@ -95,22 +138,8 @@ def work():
         time.sleep(1)
 
 
-def save_html():
-    while True:
-        for i in urls:
-            news, ur = get_news(i)
-            htmls[i] = (news, ur)
-        time.sleep(600)
-
-
 th = Thread(target=work)
 th.start()
-
-
-
-th_pars = Thread(target=save_html)
-th_pars.start()
-
 
 # while True:
 #   run_pending()
