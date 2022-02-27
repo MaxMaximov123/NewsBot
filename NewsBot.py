@@ -85,6 +85,7 @@ def send_hor():
                 bot.send_message(i[0], j)
 
 
+
 every().day.at("05:00").do(send_hor)
 
 
@@ -95,10 +96,11 @@ def work():
 
 
 def save_html():
-    for i in urls:
-        news, ur = get_news(i)
-        htmls[i] = (news, ur)
-    time.sleep(600)
+    while True:
+        for i in urls:
+            news, ur = get_news(i)
+            htmls[i] = (news, ur)
+        time.sleep(600)
 
 
 th = Thread(target=work)
