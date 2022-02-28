@@ -111,6 +111,8 @@ def send_hor():
                 bot.send_message(i[0], get_horoscope(BotDB.get_znak(i[0]))[0])
                 for j in get_horoscope(BotDB.get_znak(i[0]))[1]:
                     bot.send_message(i[0], j)
+            else:
+                bot.send_message(i[0], "Вы не указали вашу дату рождения для гороскопа, если хотите его получать введите команду '/активировать'")
             bot.send_message(i[0], "Курс валют💰:")
             znach = get_currency()
             if "−" in znach[0][1][0]:
@@ -280,7 +282,7 @@ def chat(message):
             bot.send_message(message.chat.id, f"А вы знали, что Вы {znak}?")
             BotDB.update_status(message.chat.id, "pass")
             BotDB.update_znak(message.chat.id, znak)
-            bot.send_message(message.chat.id, "Теперь каждое утро в 9 часов вы будете получать актуальный гороскоп,"
+            bot.send_message(message.chat.id, "Теперь каждое утро в 8 часов вы будете получать актуальный гороскоп, новости и курс валют,,"
                                               " чтобы отменить рассылку введите команду '/отказаться'",
                              reply_markup=markup)
         else:
