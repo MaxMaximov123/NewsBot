@@ -19,12 +19,22 @@ def get_currency():
     r = requests.get("https://invest.yandex.ru/catalog/currency/usd/")
     html = BS(r.content, "html.parser")
     dolVal = html.find_all(class_="QV5TZ0Aew_2aahfCgGmv")[0].text
-    dolProc = html.find_all(class_="rzv7e6OPChq71rCQBr9H _9RS0xgK34zINnxUjOgH")[0].text.split("  ₽")
+    dolProc = html.find_all(class_="rzv7e6OPChq71rCQBr9H _9RS0xgK34zINnxUjOgH")
+    if len(dolProc) > 0:
+        dolProc = dolProc[0].text.split("  ₽")
+    else:
+        dolProc = ("0", html.find_all(class_="rzv7e6OPChq71rCQBr9H SUCnYTT5LFAlaqfSzDh5")[0].text)
+
+
 
     r = requests.get("https://invest.yandex.ru/catalog/currency/eur/")
     html = BS(r.content, "html.parser")
     euVal = html.find_all(class_="QV5TZ0Aew_2aahfCgGmv")[0].text
-    euProc = html.find_all(class_="rzv7e6OPChq71rCQBr9H _9RS0xgK34zINnxUjOgH")[0].text.split("  ₽")
+    euProc = html.find_all(class_="rzv7e6OPChq71rCQBr9H _9RS0xgK34zINnxUjOgH")
+    if len(euProc) > 0:
+        euProc = euProc[0].text.split("  ₽")
+    else:
+        euProc = ("0", html.find_all(class_="rzv7e6OPChq71rCQBr9H SUCnYTT5LFAlaqfSzDh5")[0].text)
 
     return ((dolVal, dolProc), (euVal, euProc))
 
@@ -94,36 +104,41 @@ def send_hor():
     back = types.KeyboardButton(text="Меню↩")
     markup.add(back)
     for i in BotDB.get_id():
-        bot.send_message(i[0], "Утренние новости☕️📰:", reply_markup=markup)
-        if BotDB.get_znak(i[0]) in btns:
-            bot.send_message(i[0], get_horoscope(BotDB.get_znak(i[0]))[0])
-            for j in get_horoscope(BotDB.get_znak(i[0]))[1]:
-                bot.send_message(i[0], j)
-        bot.send_message(i[0], "Курс валют💰:")
-        znach = get_currency()
-        if "−" in znach[0][1][0]:
-            dol = f"Доллар💵: {znach[0][0]}, за день: {znach[0][1][1]}🔻"
-        else:
-            dol = f"Доллар💵: {znach[0][0]}, за день: {znach[0][1][1]}🔺"
+        try:
+            i = (int(i[0]), 999)
+            bot.send_message(i[0], "Утренние новости☕️📰:", reply_markup=markup)
+            if BotDB.get_znak(i[0]) in btns:
+                bot.send_message(i[0], get_horoscope(BotDB.get_znak(i[0]))[0])
+                for j in get_horoscope(BotDB.get_znak(i[0]))[1]:
+                    bot.send_message(i[0], j)
+            bot.send_message(i[0], "Курс валют💰:")
+            znach = get_currency()
+            if "−" in znach[0][1][0]:
+                dol = f"Доллар💵: {znach[0][0]}, за день: {znach[0][1][1]}🔻"
+            else:
+                dol = f"Доллар💵: {znach[0][0]}, за день: {znach[0][1][1]}🔺"
 
-        if "−" in znach[1][1][0]:
-            eu = f"Евро💶: {znach[1][0]}, за день: {znach[1][1][1]}🔻"
-        else:
-            eu = f"Евро💶: {znach[1][0]}, за день: {znach[1][1][1]}🔺"
+            if "−" in znach[1][1][0]:
+                eu = f"Евро💶: {znach[1][0]}, за день: {znach[1][1][1]}🔻"
+            else:
+                eu = f"Евро💶: {znach[1][0]}, за день: {znach[1][1][1]}🔺"
 
-        bot.send_message(i[0], f"""{dol}
+            bot.send_message(i[0], f"""{dol}
+        
+        {eu}""")
 
-{eu}""")
+            bot.send_message(i[0], "Новости📰:")
+            for j in range(len(htmls["https://yandex.ru/news"][0])):
+                markup = types.InlineKeyboardMarkup()
+                det = types.InlineKeyboardButton(text='Подробнее', url=htmls["https://yandex.ru/news"][1][j].get('href'))
+                markup.add(det)
+                # markup.add(types.KeyboardButton(text="Меню↩"))
+                bot.send_message(i[0], htmls["https://yandex.ru/news"][0][j].text, reply_markup=markup)
+        except BaseException:
+            print(i[0], "Он забанил")
 
-        bot.send_message(i[0], "Новости📰:")
-        for j in range(len(htmls["https://yandex.ru/news"][0])):
-            markup = types.InlineKeyboardMarkup()
-            det = types.InlineKeyboardButton(text='Подробнее', url=htmls["https://yandex.ru/news"][1][j].get('href'))
-            markup.add(det)
-            # markup.add(types.KeyboardButton(text="Меню↩"))
-            bot.send_message(i[0], htmls["https://yandex.ru/news"][0][j].text, reply_markup=markup)
 
-
+save_html()
 every().day.at("05:00").do(send_hor)
 every(5).minutes.do(save_html)
 
