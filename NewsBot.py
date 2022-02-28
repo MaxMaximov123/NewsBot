@@ -56,15 +56,10 @@ def get_news(url):
 
 def save_html():
     global htmls
-    while True:
-        for i in urls:
-            news, ur = get_news(i)
-            htmls[i] = (news, ur)
-        time.sleep(600)
-
-
-th_pars = Thread(target=save_html)
-th_pars.start()
+    for i in urls:
+        news, ur = get_news(i)
+        htmls[i] = (news, ur)
+    print("ok")
 
 
 @bot.callback_query_handler(func=lambda call: True)
@@ -130,6 +125,7 @@ def send_hor():
 
 
 every().day.at("05:00").do(send_hor)
+every(5).minutes.do(save_html)
 
 
 def work():
