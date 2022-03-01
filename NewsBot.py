@@ -19,22 +19,27 @@ def get_currency():
     r = requests.get("https://invest.yandex.ru/catalog/currency/usd/")
     html = BS(r.content, "html.parser")
     dolVal = html.find_all(class_="QV5TZ0Aew_2aahfCgGmv")[0].text
-    dolProc = html.find_all(class_="rzv7e6OPChq71rCQBr9H _9RS0xgK34zINnxUjOgH")
-    if len(dolProc) > 0:
-        dolProc = dolProc[0].text.split("  ₽")
-    else:
-        dolProc = ("0", html.find_all(class_="rzv7e6OPChq71rCQBr9H SUCnYTT5LFAlaqfSzDh5")[0].text)
-
-
+    try:
+        dolProc = html.find_all(class_="rzv7e6OPChq71rCQBr9H _9RS0xgK34zINnxUjOgH")
+        if len(dolProc) > 0:
+            dolProc = dolProc[0].text.split("  ₽")
+        else:
+            dolProc = ("0", html.find_all(class_="rzv7e6OPChq71rCQBr9H SUCnYTT5LFAlaqfSzDh5")[0].text)
+    except BaseException:
+        dolProc = ("0", "0%")
 
     r = requests.get("https://invest.yandex.ru/catalog/currency/eur/")
     html = BS(r.content, "html.parser")
     euVal = html.find_all(class_="QV5TZ0Aew_2aahfCgGmv")[0].text
-    euProc = html.find_all(class_="rzv7e6OPChq71rCQBr9H _9RS0xgK34zINnxUjOgH")
-    if len(euProc) > 0:
-        euProc = euProc[0].text.split("  ₽")
-    else:
-        euProc = ("0", html.find_all(class_="rzv7e6OPChq71rCQBr9H SUCnYTT5LFAlaqfSzDh5")[0].text)
+    try:
+        euProc = html.find_all(class_="rzv7e6OPChq71rCQBr9H _9RS0xgK34zINnxUjOgH")
+        if len(euProc) > 0:
+            euProc = euProc[0].text.split("  ₽")
+        else:
+            euProc = ("0", html.find_all(class_="rzv7e6OPChq71rCQBr9H SUCnYTT5LFAlaqfSzDh5")[0].text)
+    except BaseException:
+        euProc = ("0", "0%")
+
 
     return ((dolVal, dolProc), (euVal, euProc))
 
@@ -112,7 +117,8 @@ def send_hor():
                 for j in get_horoscope(BotDB.get_znak(i[0]))[1]:
                     bot.send_message(i[0], j)
             else:
-                bot.send_message(i[0], "Вы не указали вашу дату рождения для гороскопа, если хотите его получать введите команду '/активировать'")
+                bot.send_message(i[0],
+                                 "Вы не указали вашу дату рождения для гороскопа, если хотите его получать введите команду '/активировать'")
             bot.send_message(i[0], "Курс валют💰:")
             znach = get_currency()
             if "−" in znach[0][1][0]:
@@ -132,7 +138,8 @@ def send_hor():
             bot.send_message(i[0], "Новости📰:")
             for j in range(len(htmls["https://yandex.ru/news"][0])):
                 markup = types.InlineKeyboardMarkup()
-                det = types.InlineKeyboardButton(text='Подробнее', url=htmls["https://yandex.ru/news"][1][j].get('href'))
+                det = types.InlineKeyboardButton(text='Подробнее',
+                                                 url=htmls["https://yandex.ru/news"][1][j].get('href'))
                 markup.add(det)
                 # markup.add(types.KeyboardButton(text="Меню↩"))
                 bot.send_message(i[0], htmls["https://yandex.ru/news"][0][j].text, reply_markup=markup)
@@ -153,6 +160,7 @@ def work():
 
 th = Thread(target=work)
 th.start()
+
 
 # while True:
 #   run_pending()
@@ -282,8 +290,9 @@ def chat(message):
             bot.send_message(message.chat.id, f"А вы знали, что Вы {znak}?")
             BotDB.update_status(message.chat.id, "pass")
             BotDB.update_znak(message.chat.id, znak)
-            bot.send_message(message.chat.id, "Теперь каждое утро в 8 часов вы будете получать актуальный гороскоп, новости и курс валют,,"
-                                              " чтобы отменить рассылку введите команду '/отказаться'",
+            bot.send_message(message.chat.id,
+                             "Теперь каждое утро в 8 часов вы будете получать актуальный гороскоп, новости и курс валют,,"
+                             " чтобы отменить рассылку введите команду '/отказаться'",
                              reply_markup=markup)
         else:
             bot.send_message(message.chat.id, "Введены невенрные данные, попробуйте еще раз")
