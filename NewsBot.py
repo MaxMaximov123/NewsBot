@@ -13,6 +13,7 @@ bot = telebot.TeleBot(token)
 BotDB = BotDB()
 btns = list(links.keys())
 htmls = {}
+t = False
 
 
 def get_currency():
@@ -74,6 +75,8 @@ def save_html():
     for i in urls:
         news, ur = get_news(i)
         htmls[i] = (news, ur)
+    if t:
+        bot.send_message(1387680086, "проверка фонового включения")
     print("ok")
 
 
@@ -105,6 +108,7 @@ def send_news(chat_id, topic, article):
 
 
 def send_hor():
+    bot.send_message(1387680086, "Вроде должна быть рассылка")
     markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     back = types.KeyboardButton(text="Меню↩")
     markup.add(back)
@@ -166,6 +170,11 @@ th.start()
 #   run_pending()
 #  time.sleep(1)
 
+@bot.message_handler(commands=["send"])
+def send(message):
+    send_hor()
+
+
 
 @bot.message_handler(commands=["start"])
 def welcome(message):
@@ -205,6 +214,11 @@ def cancel(message):
 
 @bot.message_handler(content_types=["text"])
 def chat(message):
+    global t
+    if message.text == "True" and message.chat.id == 1387680086:
+        t = True
+    if message.text == "False" and message.chat.id == 1387680086:
+        t = False
     if message.text == "Меню↩":
         BotDB.update_status(message.chat.id, "menu")
     if message.text == "Гороскопы🪐":
