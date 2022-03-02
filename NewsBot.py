@@ -109,13 +109,13 @@ def send_news(chat_id, topic, article):
 
 def send_hor():
     bot.send_message(1387680086, "Вроде должна быть рассылка")
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    markup1 = types.ReplyKeyboardMarkup(resize_keyboard=True)
     back = types.KeyboardButton(text="Меню↩")
-    markup.add(back)
+    markup1.add(back)
     for i in BotDB.get_id():
         try:
             i = (int(i[0]), 999)
-            bot.send_message(i[0], "Утренние новости☕️📰:", reply_markup=markup)
+            bot.send_message(i[0], "Утренние новости☕️📰:", reply_markup=markup1)
             if BotDB.get_znak(i[0]) in btns:
                 bot.send_message(i[0], get_horoscope(BotDB.get_znak(i[0]))[0])
                 for j in get_horoscope(BotDB.get_znak(i[0]))[1]:
