@@ -173,6 +173,7 @@ th.start()
 @bot.message_handler(commands=["send"])
 def send(message):
     send_hor()
+    bot.send_message(message.chat.id, "Всем отправил")
 
 
 
@@ -217,8 +218,10 @@ def chat(message):
     global t
     if message.text == "True" and message.chat.id == 1387680086:
         t = True
+        bot.send_message(message.chat.id, "True")
     if message.text == "False" and message.chat.id == 1387680086:
         t = False
+        bot.send_message(message.chat.id, "False")
     if message.text == "Меню↩":
         BotDB.update_status(message.chat.id, "menu")
     if message.text == "Гороскопы🪐":
