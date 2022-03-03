@@ -162,8 +162,8 @@ def work():
         time.sleep(1)
 
 
-th = Thread(target=work)
-th.start()
+def polling():
+    bot.infinity_polling()
 
 
 # while True:
@@ -385,5 +385,15 @@ def chat(message):
         BotDB.update_status(message.chat.id, "pass")
 
 
-if __name__ == '__main__':
-    bot.infinity_polling()
+
+
+th = Thread(target=work)
+th.start()
+
+
+th1 = Thread(target=polling)
+th1.start()
+
+
+#if __name__ == '__main__':
+ #   bot.infinity_polling()
