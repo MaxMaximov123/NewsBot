@@ -19,7 +19,7 @@ import psycopg2
 #     #                       USERNAME      TEXT); '''
 #     # Выполнение команды: это создает новую таблицу
 #     # cursor.execute(create_table_query)
-#     cursor.execute("""ALTER TABLE trackers ADD COLUMN article INTEGER;""")
+#     cursor.execute("""ALTER TABLE trackers ADD COLUMN modes TEXT;""")
 #     conn.commit()
 #     print(546)
 # except (Exception, psycopg2.Error) as error:
@@ -82,4 +82,12 @@ class BotDB:
 
     def get_topic(self, id):
         self.cursor.execute("SELECT topic FROM trackers WHERE id = %s", (id,))
+        return self.cursor.fetchone()[0]
+
+    def update_modes(self, id, modes):
+        self.cursor.execute("UPDATE trackers SET modes = %s WHERE id = %s", (modes, id))
+        return self.conn.commit()
+
+    def get_modes(self, id):
+        self.cursor.execute("SELECT modes FROM trackers WHERE id = %s", (id,))
         return self.cursor.fetchone()[0]

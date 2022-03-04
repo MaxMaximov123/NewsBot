@@ -1,5 +1,6 @@
 token = "5256387436:AAHU4l8HhLRHBBV-1YZxYwcn1BLSstpvVcs"
 
+
 links = {"Овен♈️": "https://horo.mail.ru/prediction/aries/today/",
          "Телец♉️": "https://horo.mail.ru/prediction/taurus/today/",
          "Близнецы♊️": "https://horo.mail.ru/prediction/gemini/today/",

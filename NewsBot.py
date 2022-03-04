@@ -61,13 +61,16 @@ headers = {
 
 
 def get_news(url):
-    r = requests.get(url, headers=headers, cookies=cookies)
-    html = BS(r.text, "html.parser")
-    if url == "https://yandex.ru/news":
-        html = html.find(class_="mg-grid__row mg-grid__row_gap_8 news-top-flexible-stories news-app__top")
-    news = html.find_all(class_="mg-card__title")
-    ur = html.find_all(class_="mg-card__link")
-    return news, ur
+    try:
+        r = requests.get(url, headers=headers, cookies=cookies)
+        html = BS(r.text, "html.parser")
+        if url == "https://yandex.ru/news":
+            html = html.find(class_="mg-grid__row mg-grid__row_gap_8 news-top-flexible-stories news-app__top")
+        news = html.find_all(class_="mg-card__title")
+        ur = html.find_all(class_="mg-card__link")
+        return news, ur
+    except BaseException:
+        return [], ""
 
 
 def save_html():
@@ -82,13 +85,62 @@ def save_html():
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
-    if call.data == "skip":
-        send_news(call.message.chat.id, BotDB.get_topic(call.message.chat.id), BotDB.get_article(call.message.chat.id))
+    if BotDB.get_status(call.message.chat.id) == "settings":
+
+        if BotDB.get_modes(call.message.chat.id) == None or BotDB.get_modes(call.message.chat.id) == set("None"):
+            print("bad")
+            BotDB.update_modes(call.message.chat.id, "123")
+        true_modes = set(BotDB.get_modes(call.message.chat.id))
+        markup = types.InlineKeyboardMarkup()
+        if BotDB.get_modes(call.message.chat.id) == None or "1" in true_modes:
+            btn_1 = types.InlineKeyboardButton(text='Новости📰   ✅', callback_data="mode 1")
+        else:
+            btn_1 = types.InlineKeyboardButton(text='Новости📰   ❌', callback_data="not_mode 1")
+        if BotDB.get_modes(call.message.chat.id) == None or "2" in true_modes:
+            btn_2 = types.InlineKeyboardButton(text='Гороскоп💫  ✅', callback_data="mode 2")
+        else:
+            btn_2 = types.InlineKeyboardButton(text='Гороскоп💫  ❌', callback_data="not_mode 2")
+        if BotDB.get_modes(call.message.chat.id) == None or "3" in true_modes:
+            btn_3 = types.InlineKeyboardButton(text='Курсы валют💰   ✅', callback_data="mode 3")
+        else:
+            btn_3 = types.InlineKeyboardButton(text='Курсы валют💰   ❌', callback_data="not_mode 3")
+
+
+
+        if call.data == "not_mode 1":
+            btn_1 = types.InlineKeyboardButton(text='Новости📰   ✅', callback_data="mode 1")
+            true_modes.add("1")
+            BotDB.update_modes(call.message.chat.id, "".join(true_modes))
+        elif call.data == "mode 1":
+            btn_1 = types.InlineKeyboardButton(text='Новости📰   ❌', callback_data="not_mode 1")
+            BotDB.update_modes(call.message.chat.id, "".join(true_modes - set("1")))
+        elif call.data == "not_mode 2":
+            btn_2 = types.InlineKeyboardButton(text='Гороскоп💫  ✅', callback_data="mode 2")
+            true_modes.add("2")
+            BotDB.update_modes(call.message.chat.id, "".join(true_modes))
+        elif call.data == "mode 2":
+            btn_2 = types.InlineKeyboardButton(text='Гороскоп💫  ❌', callback_data="not_mode 2")
+            BotDB.update_modes(call.message.chat.id, "".join(true_modes - set("2")))
+        elif call.data == "not_mode 3":
+            btn_3 = types.InlineKeyboardButton(text='Курсы валют💰   ✅', callback_data="mode 3")
+            true_modes.add("3")
+            BotDB.update_modes(call.message.chat.id, "".join(true_modes))
+        elif call.data == "mode 3":
+            btn_3 = types.InlineKeyboardButton(text='Курсы валют💰   ❌', callback_data="not_mode 3")
+            BotDB.update_modes(call.message.chat.id, "".join(true_modes - set("3")))
+        markup.add(btn_1)
+        markup.add(btn_2)
+        markup.add(btn_3)
+        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Выберите категории рассылки",
+                              reply_markup=markup)
     else:
-        BotDB.update_status(call.message.chat.id, "pass")
-        BotDB.update_article(call.message.chat.id, 0)
-        send_news(call.message.chat.id, call.data, 0)
-        bot.delete_message(call.message.chat.id, call.message.message_id)
+        if call.data == "skip":
+            send_news(call.message.chat.id, BotDB.get_topic(call.message.chat.id), BotDB.get_article(call.message.chat.id))
+        else:
+            BotDB.update_status(call.message.chat.id, "pass")
+            BotDB.update_article(call.message.chat.id, 0)
+            send_news(call.message.chat.id, call.data, 0)
+            bot.delete_message(call.message.chat.id, call.message.message_id)
 
 
 def send_news(chat_id, topic, article):
@@ -115,38 +167,42 @@ def send_hor():
     for i in BotDB.get_id():
         try:
             i = (int(i[0]), 999)
-            bot.send_message(i[0], "Утренние новости☕️📰:", reply_markup=markup1)
-            if BotDB.get_znak(i[0]) in btns:
-                bot.send_message(i[0], get_horoscope(BotDB.get_znak(i[0]))[0])
-                for j in get_horoscope(BotDB.get_znak(i[0]))[1]:
-                    bot.send_message(i[0], j)
-            else:
-                bot.send_message(i[0],
-                                 "Вы не указали вашу дату рождения для гороскопа, если хотите его получать введите команду '/активировать'")
-            bot.send_message(i[0], "Курс валют💰:")
-            znach = get_currency()
-            if "−" in znach[0][1][0]:
-                dol = f"Доллар💵: {znach[0][0]}, за день: {znach[0][1][1]}🔻"
-            else:
-                dol = f"Доллар💵: {znach[0][0]}, за день: {znach[0][1][1]}🔺"
+            if BotDB.get_modes(i[0]) > 0:
+                bot.send_message(i[0], "Утренние новости☕️📰:", reply_markup=markup1)
+                if "2" in BotDB.get_modes(i[0]):
+                    if BotDB.get_znak(i[0]) in btns:
+                        bot.send_message(i[0], get_horoscope(BotDB.get_znak(i[0]))[0])
+                        for j in get_horoscope(BotDB.get_znak(i[0]))[1]:
+                            bot.send_message(i[0], j)
+                    else:
+                        bot.send_message(i[0],
+                                         "Вы не указали вашу дату рождения для гороскопа, если хотите его получать введите команду '/активировать'")
+                if "3" in BotDB.get_modes(i[0]):
+                    bot.send_message(i[0], "Курс валют💰:")
+                    znach = get_currency()
+                    if "−" in znach[0][1][0]:
+                        dol = f"Доллар💵: {znach[0][0]}, за день: {znach[0][1][1]}🔻"
+                    else:
+                        dol = f"Доллар💵: {znach[0][0]}, за день: {znach[0][1][1]}🔺"
 
-            if "−" in znach[1][1][0]:
-                eu = f"Евро💶: {znach[1][0]}, за день: {znach[1][1][1]}🔻"
-            else:
-                eu = f"Евро💶: {znach[1][0]}, за день: {znach[1][1][1]}🔺"
+                    if "−" in znach[1][1][0]:
+                        eu = f"Евро💶: {znach[1][0]}, за день: {znach[1][1][1]}🔻"
+                    else:
+                        eu = f"Евро💶: {znach[1][0]}, за день: {znach[1][1][1]}🔺"
 
-            bot.send_message(i[0], f"""{dol}
-        
-        {eu}""")
+                    bot.send_message(i[0], f"""{dol}
+                
+                {eu}""")
 
-            bot.send_message(i[0], "Новости📰:")
-            for j in range(len(htmls["https://yandex.ru/news"][0])):
-                markup = types.InlineKeyboardMarkup()
-                det = types.InlineKeyboardButton(text='Подробнее',
-                                                 url=htmls["https://yandex.ru/news"][1][j].get('href'))
-                markup.add(det)
-                # markup.add(types.KeyboardButton(text="Меню↩"))
-                bot.send_message(i[0], htmls["https://yandex.ru/news"][0][j].text, reply_markup=markup)
+                if "1" in BotDB.get_modes(i[0]):
+                    bot.send_message(i[0], "Новости📰:")
+                    for j in range(len(htmls["https://yandex.ru/news"][0])):
+                        markup = types.InlineKeyboardMarkup()
+                        det = types.InlineKeyboardButton(text='Подробнее',
+                                                         url=htmls["https://yandex.ru/news"][1][j].get('href'))
+                        markup.add(det)
+                        # markup.add(types.KeyboardButton(text="Меню↩"))
+                        bot.send_message(i[0], htmls["https://yandex.ru/news"][0][j].text, reply_markup=markup)
         except BaseException:
             print(i[0], "Он забанил")
 
@@ -163,6 +219,7 @@ def work():
 
 
 def polling():
+    run_pending()
     bot.infinity_polling()
 
 
@@ -230,6 +287,8 @@ def chat(message):
         BotDB.update_status(message.chat.id, "news")
     if message.text == "Курсы валют💰":
         BotDB.update_status(message.chat.id, "curr")
+    if message.text == "Настройки⚙":
+        BotDB.update_status(message.chat.id, "settings")
     if message.text in btns:
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
         back = types.KeyboardButton(text="Меню↩")
@@ -315,6 +374,10 @@ def chat(message):
             bot.send_message(message.chat.id, "Введены невенрные данные, попробуйте еще раз")
 
     if BotDB.get_status(message.chat.id) == "news":
+        markup1 = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        back = types.KeyboardButton(text="Меню↩")
+        markup1.add(back)
+        bot.send_message(message.chat.id, "Чтобы вернуться, нажмите кнопку меню", reply_markup=markup1)
         markup = types.InlineKeyboardMarkup()
         btn_1 = types.InlineKeyboardButton(text='Казань🕌', callback_data="https://yandex.ru/news/region/kazan")
         btn_2 = types.InlineKeyboardButton(text='Коронавирус🦠',
@@ -342,7 +405,8 @@ def chat(message):
         btn1 = types.KeyboardButton(text="Гороскопы🪐")
         btn2 = types.KeyboardButton(text="Курсы валют💰")
         btn3 = types.KeyboardButton(text="Новости📰")
-        markup.add(btn1, btn2, btn3)
+        btn4 = types.KeyboardButton(text="Настройки⚙")
+        markup.add(btn1, btn2, btn3, btn4)
         bot.send_message(message.chat.id, "Вы в меню", reply_markup=markup)
 
     if BotDB.get_status(message.chat.id) == "horoscope":
@@ -370,12 +434,12 @@ def chat(message):
         markup.add(back)
         znach = get_currency()
         if "−" in znach[0][1][0]:
-            dol = f"Доллар💵: {znach[0][0]}, за день: {znach[0][1][1]}🔻"
+            dol = f"Доллар💵: {znach[0][0]}, за день: {znach[0][1][0]}🔻"
         else:
             dol = f"Доллар💵: {znach[0][0]}, за день: {znach[0][1][1]}🔺"
 
         if "−" in znach[1][1][0]:
-            eu = f"Евро💶: {znach[1][0]}, за день: {znach[1][1][1]}🔻"
+            eu = f"Евро💶: {znach[1][0]}, за день: {znach[1][1][0]}🔻"
         else:
             eu = f"Евро💶: {znach[1][0]}, за день: {znach[1][1][1]}🔺"
 
@@ -384,12 +448,34 @@ def chat(message):
 {eu}""", reply_markup=markup)
         BotDB.update_status(message.chat.id, "pass")
 
+    if BotDB.get_status(message.chat.id) == "settings":
+        markup1 = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        back = types.KeyboardButton(text="Меню↩")
+        markup1.add(back)
+        bot.send_message(message.chat.id, "Чтобы вернуться, нажмите кнопку меню", reply_markup=markup1)
+        markup = types.InlineKeyboardMarkup()
+        if BotDB.get_modes(message.chat.id) == None or "1" in BotDB.get_modes(message.chat.id):
+            btn_1 = types.InlineKeyboardButton(text='Новости📰   ✅', callback_data="mode 1")
+        else:
+            btn_1 = types.InlineKeyboardButton(text='Новости📰   ❌', callback_data="not_mode 1")
+        if BotDB.get_modes(message.chat.id) == None or "2" in BotDB.get_modes(message.chat.id):
+            btn_2 = types.InlineKeyboardButton(text='Гороскоп💫  ✅', callback_data="mode 2")
+        else:
+            btn_2 = types.InlineKeyboardButton(text='Гороскоп💫  ❌', callback_data="not_mode 2")
+        if BotDB.get_modes(message.chat.id) == None or "3" in BotDB.get_modes(message.chat.id):
+            btn_3 = types.InlineKeyboardButton(text='Курсы валют💰   ✅', callback_data="mode 3")
+        else:
+            btn_3 = types.InlineKeyboardButton(text='Курсы валют💰   ❌', callback_data="not_mode 3")
+        markup.add(btn_1)
+        markup.add(btn_2)
+        markup.add(btn_3)
+        bot.send_message(message.chat.id, "Выберите категории рассылки", reply_markup=markup)
+
 
 
 
 th = Thread(target=work)
 th.start()
-
 
 th1 = Thread(target=polling)
 th1.start()
