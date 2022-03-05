@@ -41,7 +41,6 @@ def get_currency():
     except BaseException:
         euProc = ("0", "0%")
 
-
     return ((dolVal, dolProc), (euVal, euProc))
 
 
@@ -105,8 +104,6 @@ def callback(call):
         else:
             btn_3 = types.InlineKeyboardButton(text='Курсы валют💰   ❌', callback_data="not_mode 3")
 
-
-
         if call.data == "not_mode 1":
             btn_1 = types.InlineKeyboardButton(text='Новости📰   ✅', callback_data="mode 1")
             true_modes.add("1")
@@ -131,11 +128,13 @@ def callback(call):
         markup.add(btn_1)
         markup.add(btn_2)
         markup.add(btn_3)
-        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id, text="Выберите категории рассылки",
+        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
+                              text="Выберите категории рассылки",
                               reply_markup=markup)
     else:
         if call.data == "skip":
-            send_news(call.message.chat.id, BotDB.get_topic(call.message.chat.id), BotDB.get_article(call.message.chat.id))
+            send_news(call.message.chat.id, BotDB.get_topic(call.message.chat.id),
+                      BotDB.get_article(call.message.chat.id))
         else:
             BotDB.update_status(call.message.chat.id, "pass")
             BotDB.update_article(call.message.chat.id, 0)
@@ -167,9 +166,9 @@ def send_hor():
     for i in BotDB.get_id():
         try:
             i = (int(i[0]), 999)
-            if BotDB.get_modes(i[0]) > 0:
+            if BotDB.get_modes(i[0]) or BotDB.get_modes(i[0]) == None:
                 bot.send_message(i[0], "Утренние новости☕️📰:", reply_markup=markup1)
-                if "2" in BotDB.get_modes(i[0]):
+                if "2" in BotDB.get_modes(i[0]) or BotDB.get_modes(i[0]) == None:
                     if BotDB.get_znak(i[0]) in btns:
                         bot.send_message(i[0], get_horoscope(BotDB.get_znak(i[0]))[0])
                         for j in get_horoscope(BotDB.get_znak(i[0]))[1]:
@@ -177,7 +176,7 @@ def send_hor():
                     else:
                         bot.send_message(i[0],
                                          "Вы не указали вашу дату рождения для гороскопа, если хотите его получать введите команду '/активировать'")
-                if "3" in BotDB.get_modes(i[0]):
+                if "3" in BotDB.get_modes(i[0]) or BotDB.get_modes(i[0]) == None:
                     bot.send_message(i[0], "Курс валют💰:")
                     znach = get_currency()
                     if "−" in znach[0][1][0]:
@@ -194,7 +193,7 @@ def send_hor():
                 
                 {eu}""")
 
-                if "1" in BotDB.get_modes(i[0]):
+                if "1" in BotDB.get_modes(i[0]) or BotDB.get_modes(i[0]) == None:
                     bot.send_message(i[0], "Новости📰:")
                     for j in range(len(htmls["https://yandex.ru/news"][0])):
                         markup = types.InlineKeyboardMarkup()
@@ -231,7 +230,6 @@ def polling():
 def send(message):
     send_hor()
     bot.send_message(message.chat.id, "Всем отправил")
-
 
 
 @bot.message_handler(commands=["start"])
@@ -472,14 +470,11 @@ def chat(message):
         bot.send_message(message.chat.id, "Выберите категории рассылки", reply_markup=markup)
 
 
-
-
 th = Thread(target=work)
 th.start()
 
 th1 = Thread(target=polling)
 th1.start()
 
-
-#if __name__ == '__main__':
- #   bot.infinity_polling()
+# if __name__ == '__main__':
+#   bot.infinity_polling()
