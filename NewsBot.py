@@ -78,7 +78,7 @@ def save_html():
         news, ur = get_news(i)
         htmls[i] = (news, ur)
     if t:
-        bot.send_message(1387680086, "проверка фонового включения2")
+        bot.send_message(1387680086, "проверка фонового включения25")
     print("ok")
 
 
@@ -273,10 +273,10 @@ def chat(message):
     global t
     if message.text == "True" and message.chat.id == 1387680086:
         t = True
-        bot.send_message(message.chat.id, "True")
+        bot.send_message(message.chat.id, "True2")
     if message.text == "False" and message.chat.id == 1387680086:
         t = False
-        bot.send_message(message.chat.id, "False")
+        bot.send_message(message.chat.id, "False2")
     if message.text == "Меню↩":
         BotDB.update_status(message.chat.id, "menu")
     if message.text == "Гороскопы🪐":
