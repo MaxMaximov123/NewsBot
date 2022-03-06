@@ -79,8 +79,9 @@ def save_html():
     for i in urls:
         news, ur = get_news(i)
         htmls[i] = (news, ur)
+        # print(news[0].text)
         if t:
-            bot.send_message(1387680086, news)
+            bot.send_message(1387680086, news[0].text)
     if t:
         bot.send_message(1387680086, "проверка фонового включения25")
     print("ok")
