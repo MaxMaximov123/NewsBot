@@ -70,6 +70,7 @@ def get_news(url):
         # print(news, ur)
         return news, ur
     except BaseException:
+        print(BaseException)
         print("bad")
         return [], ""
 
@@ -148,6 +149,10 @@ def callback(call):
 
 
 def send_news(chat_id, topic, article):
+    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    markup.add(types.KeyboardButton(text="⬅Назад"),
+               types.KeyboardButton(text="Меню↩"))
+    bot.send_message(chat_id, "Нажмите 'назад', чтобы сменить тему", reply_markup=markup)
     markup = types.InlineKeyboardMarkup()
     skip = types.InlineKeyboardButton(text="Дальше", callback_data="skip")
     det = types.InlineKeyboardButton(text='Подробнее', url=htmls[topic][1][article].get('href'))
@@ -286,7 +291,7 @@ def chat(message):
         BotDB.update_status(message.chat.id, "menu")
     if message.text == "Гороскопы🪐":
         BotDB.update_status(message.chat.id, "horoscope")
-    if message.text == "Новости📰":
+    if message.text == "Новости📰" or message.text == "⬅Назад":
         BotDB.update_status(message.chat.id, "news")
     if message.text == "Курсы валют💰":
         BotDB.update_status(message.chat.id, "curr")
@@ -378,8 +383,8 @@ def chat(message):
 
     if BotDB.get_status(message.chat.id) == "news":
         markup1 = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        back = types.KeyboardButton(text="Меню↩")
-        markup1.add(back)
+        home = types.KeyboardButton(text="Меню↩")
+        markup1.add(home)
         bot.send_message(message.chat.id, "Чтобы вернуться, нажмите кнопку меню", reply_markup=markup1)
         markup = types.InlineKeyboardMarkup()
         btn_1 = types.InlineKeyboardButton(text='Казань🕌', callback_data="https://yandex.ru/news/region/kazan")
