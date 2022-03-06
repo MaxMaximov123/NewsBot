@@ -67,8 +67,10 @@ def get_news(url):
             html = html.find(class_="mg-grid__row mg-grid__row_gap_8 news-top-flexible-stories news-app__top")
         news = html.find_all(class_="mg-card__title")
         ur = html.find_all(class_="mg-card__link")
+        # print(news, ur)
         return news, ur
     except BaseException:
+        print("bad")
         return [], ""
 
 
@@ -77,6 +79,8 @@ def save_html():
     for i in urls:
         news, ur = get_news(i)
         htmls[i] = (news, ur)
+        if t:
+            bot.send_message(1387680086, news)
     if t:
         bot.send_message(1387680086, "проверка фонового включения25")
     print("ok")
