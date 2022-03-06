@@ -142,6 +142,10 @@ def callback(call):
             send_news(call.message.chat.id, BotDB.get_topic(call.message.chat.id),
                       BotDB.get_article(call.message.chat.id))
         else:
+            markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+            markup.add(types.KeyboardButton(text="⬅Назад"),
+                       types.KeyboardButton(text="Меню↩"))
+            bot.send_message(call.message.chat.id, "Нажмите 'назад', чтобы сменить тему", reply_markup=markup)
             BotDB.update_status(call.message.chat.id, "pass")
             BotDB.update_article(call.message.chat.id, 0)
             send_news(call.message.chat.id, call.data, 0)
@@ -149,10 +153,10 @@ def callback(call):
 
 
 def send_news(chat_id, topic, article):
-    markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    markup.add(types.KeyboardButton(text="⬅Назад"),
-               types.KeyboardButton(text="Меню↩"))
-    bot.send_message(chat_id, "Нажмите 'назад', чтобы сменить тему", reply_markup=markup)
+    # markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    # markup.add(types.KeyboardButton(text="⬅Назад"),
+      #         types.KeyboardButton(text="Меню↩"))
+    # bot.send_message(chat_id, "Нажмите 'назад', чтобы сменить тему", reply_markup=markup)
     markup = types.InlineKeyboardMarkup()
     skip = types.InlineKeyboardButton(text="Дальше", callback_data="skip")
     det = types.InlineKeyboardButton(text='Подробнее', url=htmls[topic][1][article].get('href'))
@@ -229,7 +233,7 @@ def work():
 
 def polling():
     run_pending()
-    bot.infinity_polling()
+#    bot.polling(none_stop=True)
 
 
 # while True:
@@ -483,8 +487,12 @@ def chat(message):
 th = Thread(target=work)
 th.start()
 
-th1 = Thread(target=polling)
-th1.start()
+#th1 = Thread(target=polling)
+#th1.start()
 
+bot.polling(none_stop=True)
+
+if __name__ == '__main__':
+    run_pending()
 # if __name__ == '__main__':
 #   bot.infinity_polling()
