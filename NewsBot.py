@@ -222,7 +222,7 @@ def send_hor():
 
 
 save_html()
-every().day.at("06:00").do(send_hor)
+every().day.at("05:00").do(send_hor)
 every(5).minutes.do(save_html)
 
 
@@ -493,7 +493,7 @@ th1.start()
 
 #bot.polling(none_stop=True)
 
-if __name__ == '__main__':
-    work()
+# if __name__ == '__main__':
+#     work()
 # if __name__ == '__main__':
 #   bot.infinity_polling()
