@@ -70,6 +70,7 @@ def get_news(url):
         # print(news, ur)
         return news, ur
     except Exception:
+        print(Exception)
         print("bad")
         return [], ""
 
