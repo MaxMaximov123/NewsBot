@@ -81,7 +81,7 @@ def save_html():
         news, ur = get_news(i)
         htmls[i] = (news, ur)
         # print(news[0].text)
-        if t:
+        if t and len(news) > 0:
             bot.send_message(1387680086, news[0].text)
     if t:
         bot.send_message(1387680086, "проверка фонового включения25")
@@ -229,12 +229,12 @@ every(5).minutes.do(save_html)
 def work():
     while True:
         run_pending()
-        time.sleep(1)
+        time.sleep(0.5)
 
 
 def polling():
-    run_pending()
-    bot.polling(none_stop=True)
+    #run_pending()
+    bot.infinity_polling()
 
 
 # while True:
