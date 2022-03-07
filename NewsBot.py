@@ -82,13 +82,15 @@ def save_html():
     for i in urls:
         try:
             news, ur = get_news(i)
-            htmls[i] = (news, ur)
+            if len(news) > 0 < len(ur):
+                htmls[i] = (news, ur)
             # print(news[0].text)
             if t and len(news) > 0:
                 bot.send_message(1387680086, news[0].text)
         except Exception as error:
             bot.send_message(1387680086, "Ошибка при копирование html")
             print(error)
+        time.sleep(randint(1, 5))
     if t:
         bot.send_message(1387680086, "проверка фонового включения25")
     print("ok")
@@ -236,7 +238,7 @@ def send_hor():
 
 
 every().day.at("05:00").do(send_hor)
-every(randint(5, 10)).minutes.do(save_html)
+every(randint(5, 7)).minutes.do(save_html)
 
 
 def work():
