@@ -69,8 +69,7 @@ def get_news(url):
         ur = html.find_all(class_="mg-card__link")
         # print(news, ur)
         return news, ur
-    except (Exception, BS.Error) as error:
-        print(error)
+    except Exception:
         print("bad")
         return [], ""
 
