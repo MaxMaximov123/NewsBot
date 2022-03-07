@@ -69,8 +69,8 @@ def get_news(url):
         ur = html.find_all(class_="mg-card__link")
         # print(news, ur)
         return news, ur
-    except BaseException:
-        print(BaseException)
+    except (Exception, BS.Error) as error:
+        print(error)
         print("bad")
         return [], ""
 
@@ -499,7 +499,7 @@ def chat(message):
 th = Thread(target=work)
 th.start()
 
-th1 = Thread(target=polling)
+th1 = Thread(target=bot.infinity_polling)
 th1.start()
 
 #bot.polling(none_stop=True)
