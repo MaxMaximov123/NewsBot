@@ -1,5 +1,6 @@
 import telebot
 import requests
+from random import randint
 from bs4 import BeautifulSoup as BS
 from config import *
 from db import *
@@ -235,7 +236,7 @@ def send_hor():
 
 
 every().day.at("05:00").do(send_hor)
-every(5).minutes.do(save_html)
+every(randint(5, 10)).minutes.do(save_html)
 
 
 def work():
