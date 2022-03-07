@@ -234,7 +234,7 @@ def send_hor():
             print(i[0], "Он забанил")
 
 
-every().day.at("18:16").do(send_hor)
+every().day.at("05:00").do(send_hor)
 every(5).minutes.do(save_html)
 
 
