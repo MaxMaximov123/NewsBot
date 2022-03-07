@@ -162,7 +162,7 @@ def send_news(chat_id, topic, article):
     det = types.InlineKeyboardButton(text='Подробнее', url=htmls[topic][1][article].get('href'))
     markup.add(det, skip)
     # markup.add(types.KeyboardButton(text="Меню↩"))
-    if article < len(htmls[topic][0]) - 1:
+    if article < len(htmls[topic][0]) - 1 and len(htmls[topic][0]) > 0 and len(htmls[topic][1]) > 0:
         bot.send_message(chat_id, htmls[topic][0][article].text, reply_markup=markup)
         BotDB.update_article(chat_id, article + 1)
         BotDB.update_topic(chat_id, topic)
