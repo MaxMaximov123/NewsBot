@@ -168,7 +168,8 @@ def send_news(chat_id, topic, article):
         BotDB.update_topic(chat_id, topic)
     else:
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        markup.add(types.KeyboardButton(text="Меню↩"))
+        markup.add(types.KeyboardButton(text="⬅Назад"),
+                   types.KeyboardButton(text="Меню↩"))
         bot.send_message(chat_id, "Новости на эту тему закончились", reply_markup=markup)
 
 
@@ -221,7 +222,7 @@ def send_hor():
 
 
 save_html()
-every().day.at("05:00").do(send_hor)
+every().day.at("06:00").do(send_hor)
 every(5).minutes.do(save_html)
 
 
@@ -487,12 +488,12 @@ def chat(message):
 th = Thread(target=work)
 th.start()
 
-#th1 = Thread(target=polling)
-#th1.start()
+th1 = Thread(target=polling)
+th1.start()
 
-bot.polling(none_stop=True)
+#bot.polling(none_stop=True)
 
 if __name__ == '__main__':
-    run_pending()
+    work()
 # if __name__ == '__main__':
 #   bot.infinity_polling()
