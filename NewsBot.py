@@ -91,12 +91,12 @@ def save_html():
         bot.send_message(1387680086, "проверка фонового включения25")
     print("ok")
 
+
 save_html()
 
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
-    print(call.from_user.id)
     # print(call.message.chat.id)
     # print(BotDB.get_status(call.from_user.id))
     try:
@@ -168,15 +168,14 @@ def callback(call):
 def send_news(chat_id, topic, article):
     # markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
     # markup.add(types.KeyboardButton(text="⬅Назад"),
-      #         types.KeyboardButton(text="Меню↩"))
+    #         types.KeyboardButton(text="Меню↩"))
     # bot.send_message(chat_id, "Нажмите 'назад', чтобы сменить тему", reply_markup=markup)
-    if len(htmls[topic][0]) > 0 and len(htmls[topic][1]) > 0:
+    # markup.add(types.KeyboardButton(text="Меню↩"))
+    if article < len(htmls[topic][0]) - 1 and len(htmls[topic][0]) > 0 and len(htmls[topic][1]) > 0:
         markup = types.InlineKeyboardMarkup()
         skip = types.InlineKeyboardButton(text="Дальше", callback_data="skip")
         det = types.InlineKeyboardButton(text='Подробнее', url=htmls[topic][1][article].get('href'))
         markup.add(det, skip)
-    # markup.add(types.KeyboardButton(text="Меню↩"))
-    if article < len(htmls[topic][0]) - 1 and len(htmls[topic][0]) > 0 and len(htmls[topic][1]) > 0:
         bot.send_message(chat_id, htmls[topic][0][article].text, reply_markup=markup)
         BotDB.update_article(chat_id, article + 1)
         BotDB.update_topic(chat_id, topic)
@@ -192,9 +191,9 @@ def send_hor():
     markup1 = types.ReplyKeyboardMarkup(resize_keyboard=True)
     back = types.KeyboardButton(text="Меню↩")
     markup1.add(back)
-    for i in [(1387680086, 999)]:#BotDB.get_id():
+    for i in BotDB.get_id():  # [(1387680086, 999)]:
         try:
-            #i = (int(i[0]), 999)
+            # i = (int(i[0]), 999)
             if BotDB.get_modes(i[0]) or BotDB.get_modes(i[0]) == None:
                 bot.send_message(i[0], "Утренние новости☕️📰:", reply_markup=markup1)
                 if "2" in BotDB.get_modes(i[0]) or BotDB.get_modes(i[0]) == None:
@@ -235,8 +234,7 @@ def send_hor():
             print(i[0], "Он забанил")
 
 
-
-every().day.at("05:00").do(send_hor)
+every().day.at("18:16").do(send_hor)
 every(5).minutes.do(save_html)
 
 
@@ -247,7 +245,7 @@ def work():
 
 
 def polling():
-    #run_pending()
+    # run_pending()
     bot.infinity_polling()
 
 
@@ -263,7 +261,7 @@ def send(message):
 
 @bot.message_handler(commands=["start"])
 def welcome(message):
-    if (message.chat.id, ) not in BotDB.get_id():
+    if (message.chat.id,) not in BotDB.get_id():
         bot.send_message(message.chat.id,
                          "{0.first_name}, здравствуйте, я новостной бот. Напишите мне день и месяц вашего рождения (через точку), чтобы получать гороскоп".format(
                              message.from_user))
@@ -516,7 +514,7 @@ th.start()
 th1 = Thread(target=bot.infinity_polling)
 th1.start()
 
-#bot.polling(none_stop=True)
+# bot.polling(none_stop=True)
 
 # if __name__ == '__main__':
 #     work()
