@@ -100,7 +100,6 @@ def callback(call):
     # print(call.message.chat.id)
     # print(BotDB.get_status(call.from_user.id))
     try:
-        print(BotDB.user_exists(call.message.chat.id))
         if BotDB.user_exists(call.message.chat.id) and BotDB.get_status(call.message.chat.id) == "settings":
 
             if BotDB.get_modes(call.message.chat.id) == None or BotDB.get_modes(call.message.chat.id) == set("None"):
