@@ -7,7 +7,7 @@ from telebot import types
 from schedule import every, run_pending
 import time
 from threading import Thread
-import pprint
+from pprint import pprint
 
 bot = telebot.TeleBot(token)
 BotDB = BotDB()
@@ -69,8 +69,8 @@ def get_news(url):
         ur = html.find_all(class_="mg-card__link")
         # print(news, ur)
         return news, ur
-    except Exception:
-        print(Exception)
+    except Exception as error:
+        print(error)
         print("bad")
         return [], ""
 
@@ -78,67 +78,77 @@ def get_news(url):
 def save_html():
     global htmls
     for i in urls:
-        news, ur = get_news(i)
-        htmls[i] = (news, ur)
-        # print(news[0].text)
-        if t and len(news) > 0:
-            bot.send_message(1387680086, news[0].text)
+        try:
+            news, ur = get_news(i)
+            htmls[i] = (news, ur)
+            # print(news[0].text)
+            if t and len(news) > 0:
+                bot.send_message(1387680086, news[0].text)
+        except Exception as error:
+            bot.send_message(1387680086, "Ошибка при копирование html")
+            print(error)
     if t:
         bot.send_message(1387680086, "проверка фонового включения25")
     print("ok")
 
+save_html()
+
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
-    if BotDB.get_status(call.message.chat.id) == "settings":
+    print(call.from_user.id)
+    # print(call.message.chat.id)
+    # print(BotDB.get_status(call.from_user.id))
+    try:
+        print(BotDB.user_exists(call.message.chat.id))
+        if BotDB.user_exists(call.message.chat.id) and BotDB.get_status(call.message.chat.id) == "settings":
 
-        if BotDB.get_modes(call.message.chat.id) == None or BotDB.get_modes(call.message.chat.id) == set("None"):
-            print("bad")
-            BotDB.update_modes(call.message.chat.id, "123")
-        true_modes = set(BotDB.get_modes(call.message.chat.id))
-        markup = types.InlineKeyboardMarkup()
-        if BotDB.get_modes(call.message.chat.id) == None or "1" in true_modes:
-            btn_1 = types.InlineKeyboardButton(text='Новости📰   ✅', callback_data="mode 1")
-        else:
-            btn_1 = types.InlineKeyboardButton(text='Новости📰   ❌', callback_data="not_mode 1")
-        if BotDB.get_modes(call.message.chat.id) == None or "2" in true_modes:
-            btn_2 = types.InlineKeyboardButton(text='Гороскоп💫  ✅', callback_data="mode 2")
-        else:
-            btn_2 = types.InlineKeyboardButton(text='Гороскоп💫  ❌', callback_data="not_mode 2")
-        if BotDB.get_modes(call.message.chat.id) == None or "3" in true_modes:
-            btn_3 = types.InlineKeyboardButton(text='Курсы валют💰   ✅', callback_data="mode 3")
-        else:
-            btn_3 = types.InlineKeyboardButton(text='Курсы валют💰   ❌', callback_data="not_mode 3")
+            if BotDB.get_modes(call.message.chat.id) == None or BotDB.get_modes(call.message.chat.id) == set("None"):
+                print("bad")
+                BotDB.update_modes(call.message.chat.id, "123")
+            true_modes = set(BotDB.get_modes(call.message.chat.id))
+            markup = types.InlineKeyboardMarkup()
+            if BotDB.get_modes(call.message.chat.id) == None or "1" in true_modes:
+                btn_1 = types.InlineKeyboardButton(text='Новости📰   ✅', callback_data="mode 1")
+            else:
+                btn_1 = types.InlineKeyboardButton(text='Новости📰   ❌', callback_data="not_mode 1")
+            if BotDB.get_modes(call.message.chat.id) == None or "2" in true_modes:
+                btn_2 = types.InlineKeyboardButton(text='Гороскоп💫  ✅', callback_data="mode 2")
+            else:
+                btn_2 = types.InlineKeyboardButton(text='Гороскоп💫  ❌', callback_data="not_mode 2")
+            if BotDB.get_modes(call.message.chat.id) == None or "3" in true_modes:
+                btn_3 = types.InlineKeyboardButton(text='Курсы валют💰   ✅', callback_data="mode 3")
+            else:
+                btn_3 = types.InlineKeyboardButton(text='Курсы валют💰   ❌', callback_data="not_mode 3")
 
-        if call.data == "not_mode 1":
-            btn_1 = types.InlineKeyboardButton(text='Новости📰   ✅', callback_data="mode 1")
-            true_modes.add("1")
-            BotDB.update_modes(call.message.chat.id, "".join(true_modes))
-        elif call.data == "mode 1":
-            btn_1 = types.InlineKeyboardButton(text='Новости📰   ❌', callback_data="not_mode 1")
-            BotDB.update_modes(call.message.chat.id, "".join(true_modes - set("1")))
-        elif call.data == "not_mode 2":
-            btn_2 = types.InlineKeyboardButton(text='Гороскоп💫  ✅', callback_data="mode 2")
-            true_modes.add("2")
-            BotDB.update_modes(call.message.chat.id, "".join(true_modes))
-        elif call.data == "mode 2":
-            btn_2 = types.InlineKeyboardButton(text='Гороскоп💫  ❌', callback_data="not_mode 2")
-            BotDB.update_modes(call.message.chat.id, "".join(true_modes - set("2")))
-        elif call.data == "not_mode 3":
-            btn_3 = types.InlineKeyboardButton(text='Курсы валют💰   ✅', callback_data="mode 3")
-            true_modes.add("3")
-            BotDB.update_modes(call.message.chat.id, "".join(true_modes))
-        elif call.data == "mode 3":
-            btn_3 = types.InlineKeyboardButton(text='Курсы валют💰   ❌', callback_data="not_mode 3")
-            BotDB.update_modes(call.message.chat.id, "".join(true_modes - set("3")))
-        markup.add(btn_1)
-        markup.add(btn_2)
-        markup.add(btn_3)
-        bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
-                              text="Выберите категории рассылки",
-                              reply_markup=markup)
-    else:
-        if call.data == "skip":
+            if call.data == "not_mode 1":
+                btn_1 = types.InlineKeyboardButton(text='Новости📰   ✅', callback_data="mode 1")
+                true_modes.add("1")
+                BotDB.update_modes(call.message.chat.id, "".join(true_modes))
+            elif call.data == "mode 1":
+                btn_1 = types.InlineKeyboardButton(text='Новости📰   ❌', callback_data="not_mode 1")
+                BotDB.update_modes(call.message.chat.id, "".join(true_modes - set("1")))
+            elif call.data == "not_mode 2":
+                btn_2 = types.InlineKeyboardButton(text='Гороскоп💫  ✅', callback_data="mode 2")
+                true_modes.add("2")
+                BotDB.update_modes(call.message.chat.id, "".join(true_modes))
+            elif call.data == "mode 2":
+                btn_2 = types.InlineKeyboardButton(text='Гороскоп💫  ❌', callback_data="not_mode 2")
+                BotDB.update_modes(call.message.chat.id, "".join(true_modes - set("2")))
+            elif call.data == "not_mode 3":
+                btn_3 = types.InlineKeyboardButton(text='Курсы валют💰   ✅', callback_data="mode 3")
+                true_modes.add("3")
+                BotDB.update_modes(call.message.chat.id, "".join(true_modes))
+            elif call.data == "mode 3":
+                btn_3 = types.InlineKeyboardButton(text='Курсы валют💰   ❌', callback_data="not_mode 3")
+                BotDB.update_modes(call.message.chat.id, "".join(true_modes - set("3")))
+            markup.add(btn_1)
+            markup.add(btn_2)
+            markup.add(btn_3)
+            bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
+                                  text="Выберите категории рассылки",
+                                  reply_markup=markup)
+        elif call.data == "skip":
             send_news(call.message.chat.id, BotDB.get_topic(call.message.chat.id),
                       BotDB.get_article(call.message.chat.id))
         else:
@@ -150,6 +160,9 @@ def callback(call):
             BotDB.update_article(call.message.chat.id, 0)
             send_news(call.message.chat.id, call.data, 0)
             bot.delete_message(call.message.chat.id, call.message.message_id)
+    except Exception as error:
+        print("ошибка callback")
+        print(error)
 
 
 def send_news(chat_id, topic, article):
@@ -222,7 +235,7 @@ def send_hor():
             print(i[0], "Он забанил")
 
 
-save_html()
+
 every().day.at("05:00").do(send_hor)
 every(5).minutes.do(save_html)
 
