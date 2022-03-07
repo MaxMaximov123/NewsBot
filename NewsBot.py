@@ -157,10 +157,11 @@ def send_news(chat_id, topic, article):
     # markup.add(types.KeyboardButton(text="⬅Назад"),
       #         types.KeyboardButton(text="Меню↩"))
     # bot.send_message(chat_id, "Нажмите 'назад', чтобы сменить тему", reply_markup=markup)
-    markup = types.InlineKeyboardMarkup()
-    skip = types.InlineKeyboardButton(text="Дальше", callback_data="skip")
-    det = types.InlineKeyboardButton(text='Подробнее', url=htmls[topic][1][article].get('href'))
-    markup.add(det, skip)
+    if len(htmls[topic][0]) > 0 and len(htmls[topic][1]) > 0:
+        markup = types.InlineKeyboardMarkup()
+        skip = types.InlineKeyboardButton(text="Дальше", callback_data="skip")
+        det = types.InlineKeyboardButton(text='Подробнее', url=htmls[topic][1][article].get('href'))
+        markup.add(det, skip)
     # markup.add(types.KeyboardButton(text="Меню↩"))
     if article < len(htmls[topic][0]) - 1 and len(htmls[topic][0]) > 0 and len(htmls[topic][1]) > 0:
         bot.send_message(chat_id, htmls[topic][0][article].text, reply_markup=markup)
