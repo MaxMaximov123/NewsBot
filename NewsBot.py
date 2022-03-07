@@ -234,7 +234,7 @@ def work():
 
 def polling():
     run_pending()
-#    bot.polling(none_stop=True)
+    bot.polling(none_stop=True)
 
 
 # while True:
