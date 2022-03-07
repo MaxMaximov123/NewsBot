@@ -98,6 +98,26 @@ def save_html():
 
 save_html()
 
+def send_news(chat_id, topic, article):
+    # markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+    # markup.add(types.KeyboardButton(text="⬅Назад"),
+    #         types.KeyboardButton(text="Меню↩"))
+    # bot.send_message(chat_id, "Нажмите 'назад', чтобы сменить тему", reply_markup=markup)
+    # markup.add(types.KeyboardButton(text="Меню↩"))
+    if topic in htmls and article < len(htmls[topic][0]) - 1 and len(htmls[topic][0]) > 0 and len(htmls[topic][1]) > 0:
+        markup = types.InlineKeyboardMarkup()
+        skip = types.InlineKeyboardButton(text="Дальше", callback_data="skip")
+        det = types.InlineKeyboardButton(text='Подробнее', url=htmls[topic][1][article].get('href'))
+        markup.add(det, skip)
+        bot.send_message(chat_id, htmls[topic][0][article].text, reply_markup=markup)
+        BotDB.update_article(chat_id, article + 1)
+        BotDB.update_topic(chat_id, topic)
+    else:
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        markup.add(types.KeyboardButton(text="⬅Назад"),
+                   types.KeyboardButton(text="Меню↩"))
+        bot.send_message(chat_id, "Новости на эту тему закончились", reply_markup=markup)
+
 
 @bot.callback_query_handler(func=lambda call: True)
 def callback(call):
@@ -159,7 +179,7 @@ def callback(call):
             markup.add(types.KeyboardButton(text="⬅Назад"),
                        types.KeyboardButton(text="Меню↩"))
             bot.send_message(call.message.chat.id, "Нажмите 'назад', чтобы сменить тему", reply_markup=markup)
-            BotDB.update_status(call.message.chat.id, "pass")
+            # BotDB.update_status(call.message.chat.id, "pass")
             BotDB.update_article(call.message.chat.id, 0)
             send_news(call.message.chat.id, call.data, 0)
             bot.delete_message(call.message.chat.id, call.message.message_id)
@@ -168,25 +188,6 @@ def callback(call):
         print(error)
 
 
-def send_news(chat_id, topic, article):
-    # markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-    # markup.add(types.KeyboardButton(text="⬅Назад"),
-    #         types.KeyboardButton(text="Меню↩"))
-    # bot.send_message(chat_id, "Нажмите 'назад', чтобы сменить тему", reply_markup=markup)
-    # markup.add(types.KeyboardButton(text="Меню↩"))
-    if article < len(htmls[topic][0]) - 1 and len(htmls[topic][0]) > 0 and len(htmls[topic][1]) > 0:
-        markup = types.InlineKeyboardMarkup()
-        skip = types.InlineKeyboardButton(text="Дальше", callback_data="skip")
-        det = types.InlineKeyboardButton(text='Подробнее', url=htmls[topic][1][article].get('href'))
-        markup.add(det, skip)
-        bot.send_message(chat_id, htmls[topic][0][article].text, reply_markup=markup)
-        BotDB.update_article(chat_id, article + 1)
-        BotDB.update_topic(chat_id, topic)
-    else:
-        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
-        markup.add(types.KeyboardButton(text="⬅Назад"),
-                   types.KeyboardButton(text="Меню↩"))
-        bot.send_message(chat_id, "Новости на эту тему закончились", reply_markup=markup)
 
 
 def send_hor():
