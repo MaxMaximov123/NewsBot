@@ -63,6 +63,7 @@ def get_news(url):
     try:
         r = requests.get(url, headers=headers, cookies=cookies)
         html = BS(r.text, "html.parser")
+        print(html)
         if url == "https://yandex.ru/news":
             html = html.find(class_="mg-grid__row mg-grid__row_gap_8 news-top-flexible-stories news-app__top")
         news = html.find_all(class_="mg-card__title")
