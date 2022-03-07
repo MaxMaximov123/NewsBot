@@ -178,9 +178,9 @@ def send_hor():
     markup1 = types.ReplyKeyboardMarkup(resize_keyboard=True)
     back = types.KeyboardButton(text="Меню↩")
     markup1.add(back)
-    for i in BotDB.get_id():
+    for i in [(1387680086, 999)]:#BotDB.get_id():
         try:
-            i = (int(i[0]), 999)
+            #i = (int(i[0]), 999)
             if BotDB.get_modes(i[0]) or BotDB.get_modes(i[0]) == None:
                 bot.send_message(i[0], "Утренние новости☕️📰:", reply_markup=markup1)
                 if "2" in BotDB.get_modes(i[0]) or BotDB.get_modes(i[0]) == None:
@@ -249,14 +249,25 @@ def send(message):
 
 @bot.message_handler(commands=["start"])
 def welcome(message):
-    bot.send_message(message.chat.id,
-                     "{0.first_name}, здравствуйте, я новостной бот. Напишите мне день и месяц вашего рождения (через точку), чтобы получать гороскоп".format(
-                         message.from_user))
-    if not BotDB.user_exists(message.chat.id):
-        BotDB.add_user(message.chat.id, "welcome", "{0.first_name}".format(message.from_user),
-                       message.from_user.username, "pass")
+    if (message.chat.id, ) not in BotDB.get_id():
+        bot.send_message(message.chat.id,
+                         "{0.first_name}, здравствуйте, я новостной бот. Напишите мне день и месяц вашего рождения (через точку), чтобы получать гороскоп".format(
+                             message.from_user))
+        if not BotDB.user_exists(message.chat.id):
+            BotDB.add_user(message.chat.id, "welcome", "{0.first_name}".format(message.from_user),
+                           message.from_user.username, "pass")
+        else:
+            BotDB.update_status(message.chat.id, "welcome")
     else:
-        BotDB.update_status(message.chat.id, "welcome")
+        bot.send_message(message.chat.id, "Я тебя помню")
+        BotDB.update_status(message.chat.id, "menu")
+        markup = types.ReplyKeyboardMarkup(row_width=3, resize_keyboard=True)
+        btn1 = types.KeyboardButton(text="Гороскопы🪐")
+        btn2 = types.KeyboardButton(text="Курсы валют💰")
+        btn3 = types.KeyboardButton(text="Новости📰")
+        btn4 = types.KeyboardButton(text="Настройки⚙")
+        markup.add(btn1, btn2, btn3, btn4)
+        bot.send_message(message.chat.id, "Вы в меню", reply_markup=markup)
 
 
 @bot.message_handler(commands=["активировать"])
