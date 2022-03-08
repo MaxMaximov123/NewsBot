@@ -8,6 +8,7 @@ from telebot import types
 from schedule import every, run_pending
 import time
 from threading import Thread
+from fake_useragent import UserAgent
 from pprint import pprint
 
 bot = telebot.TeleBot(token)
@@ -44,7 +45,7 @@ def get_currency():
 
     return ((dolVal, dolProc), (euVal, euProc))
 
-
+#print(BotDB.get_modes(726169792))
 # print("−" in get_currency()[0][1][0])
 
 def get_horoscope(znak):
@@ -55,6 +56,7 @@ def get_horoscope(znak):
     soup = html.select('p')
     return soup1, soup
 
+user_agent = UserAgent()
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.174 YaBrowser/22.1.3.848 Yowser/2.5 Safari/537.36'}
@@ -90,7 +92,7 @@ def save_html():
         except Exception as error:
             bot.send_message(1387680086, "Ошибка при копирование html")
             print(error)
-        time.sleep(randint(1, 5))
+        time.sleep(randint(5, 20) / 10)
     if t:
         bot.send_message(1387680086, "проверка фонового включения25")
     print("ok")
@@ -195,12 +197,12 @@ def send_hor():
     markup1 = types.ReplyKeyboardMarkup(resize_keyboard=True)
     back = types.KeyboardButton(text="Меню↩")
     markup1.add(back)
-    for i in BotDB.get_id():  # [(1387680086, 999)]:
+    for i in BotDB.get_id():  # [(1387680086, 999)]: # 
         try:
-            # i = (int(i[0]), 999)
-            if BotDB.get_modes(i[0]) or BotDB.get_modes(i[0]) == None:
+            i = (int(i[0]), 999)
+            if "1" in BotDB.get_modes(i[0]) or "2" in BotDB.get_modes(i[0]) or "3" in BotDB.get_modes(i[0]) or BotDB.get_modes(i[0]) is None:
                 bot.send_message(i[0], "Утренние новости☕️📰:", reply_markup=markup1)
-                if "2" in BotDB.get_modes(i[0]) or BotDB.get_modes(i[0]) == None:
+                if "2" in BotDB.get_modes(i[0]) or BotDB.get_modes(i[0]) is None:
                     if BotDB.get_znak(i[0]) in btns:
                         bot.send_message(i[0], get_horoscope(BotDB.get_znak(i[0]))[0])
                         for j in get_horoscope(BotDB.get_znak(i[0]))[1]:
@@ -208,7 +210,7 @@ def send_hor():
                     else:
                         bot.send_message(i[0],
                                          "Вы не указали вашу дату рождения для гороскопа, если хотите его получать введите команду '/активировать'")
-                if "3" in BotDB.get_modes(i[0]) or BotDB.get_modes(i[0]) == None:
+                if "3" in BotDB.get_modes(i[0]) or BotDB.get_modes(i[0]) is None:
                     bot.send_message(i[0], "Курс валют💰:")
                     znach = get_currency()
                     if "−" in znach[0][1][0]:
@@ -225,7 +227,7 @@ def send_hor():
                 
                 {eu}""")
 
-                if "1" in BotDB.get_modes(i[0]) or BotDB.get_modes(i[0]) == None:
+                if "1" in BotDB.get_modes(i[0]) or BotDB.get_modes(i[0]) is None:
                     bot.send_message(i[0], "Новости📰:")
                     for j in range(len(htmls["https://yandex.ru/news"][0])):
                         markup = types.InlineKeyboardMarkup()
@@ -234,8 +236,9 @@ def send_hor():
                         markup.add(det)
                         # markup.add(types.KeyboardButton(text="Меню↩"))
                         bot.send_message(i[0], htmls["https://yandex.ru/news"][0][j].text, reply_markup=markup)
-        except BaseException:
+        except BaseException as er:
             print(i[0], "Он забанил")
+            print(er)
 
 
 every().day.at("05:00").do(send_hor)
