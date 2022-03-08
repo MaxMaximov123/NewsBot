@@ -69,8 +69,12 @@ def get_news(url):
         #print(html)
         if url == "https://yandex.ru/news":
             html = html.find(class_="mg-grid__row mg-grid__row_gap_8 news-top-flexible-stories news-app__top")
-        news = html.find_all(class_="mg-card__title")
-        ur = html.find_all(class_="mg-card__link")
+        if len(html) > 0:
+            news = html.find_all(class_="mg-card__title")
+            ur = html.find_all(class_="mg-card__link")
+        else:
+            news = []
+            ur = []
         # print(news, ur)
         return news, ur
     except Exception as error:
