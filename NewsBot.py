@@ -69,7 +69,7 @@ def get_news(url):
         #print(html)
         if url == "https://yandex.ru/news":
             html = html.find(class_="mg-grid__row mg-grid__row_gap_8 news-top-flexible-stories news-app__top")
-        if len(html) > 0:
+        if html:
             news = html.find_all(class_="mg-card__title")
             ur = html.find_all(class_="mg-card__link")
         else:
