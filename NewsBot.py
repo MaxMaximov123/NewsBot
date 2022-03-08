@@ -8,7 +8,7 @@ from telebot import types
 from schedule import every, run_pending
 import time
 from threading import Thread
-from fake_useragent import UserAgent
+#from fake_useragent import UserAgent
 from pprint import pprint
 
 bot = telebot.TeleBot(token)
@@ -56,7 +56,7 @@ def get_horoscope(znak):
     soup = html.select('p')
     return soup1, soup
 
-user_agent = UserAgent()
+#user_agent = UserAgent()
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.174 YaBrowser/22.1.3.848 Yowser/2.5 Safari/537.36'}
@@ -197,7 +197,7 @@ def send_hor():
     markup1 = types.ReplyKeyboardMarkup(resize_keyboard=True)
     back = types.KeyboardButton(text="Меню↩")
     markup1.add(back)
-    for i in BotDB.get_id():  # [(1387680086, 999)]: # 
+    for i in BotDB.get_id():  # [(1387680086, 999)]: #
         try:
             i = (int(i[0]), 999)
             if "1" in BotDB.get_modes(i[0]) or "2" in BotDB.get_modes(i[0]) or "3" in BotDB.get_modes(i[0]) or BotDB.get_modes(i[0]) is None:
