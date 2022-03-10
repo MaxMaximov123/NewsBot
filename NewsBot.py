@@ -426,6 +426,7 @@ def chat(message):
         markup1.add(home)
         bot.send_message(message.chat.id, "Чтобы вернуться, нажмите кнопку меню", reply_markup=markup1)
         markup = types.InlineKeyboardMarkup()
+        btn_0 = types.InlineKeyboardButton(text='Главное❗', callback_data="https://yandex.ru/news")
         btn_1 = types.InlineKeyboardButton(text='Казань🕌', callback_data="https://yandex.ru/news/region/kazan")
         btn_2 = types.InlineKeyboardButton(text='Коронавирус🦠',
                                            callback_data="https://yandex.ru/news/rubric/koronavirus")
@@ -437,6 +438,7 @@ def chat(message):
                                            callback_data="https://yandex.ru/news/rubric/incident")
         btn_7 = types.InlineKeyboardButton(text='Культура🎨', callback_data="https://yandex.ru/news/rubric/culture")
         btn_8 = types.InlineKeyboardButton(text='Технологии💻', callback_data="https://yandex.ru/news/rubric/computers")
+        markup.add(btn_0)
         markup.add(btn_1)
         markup.add(btn_2)
         markup.add(btn_3)
