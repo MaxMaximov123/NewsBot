@@ -1,3 +1,5 @@
+import random
+
 import telebot
 import requests
 from random import randint
@@ -61,15 +63,15 @@ def get_horoscope(znak):
 
 # user_agent = UserAgent()
 
-
 def get_news(url):
     try:
-
+        ua = UserAgent()
+        methods = [ua.ie, ua.msie, ua.opera, ua.chrome, ua.google, ua.firefox, ua.ff, ua.safari]
         # session = requests.Session()
         # session.proxies.update(proxies)
         # session.headers.update(headers)
-        pprint(UserAgent().chrome)
-        r = requests.get(url, auth=(login, pasword), headers={'User-Agent': UserAgent().chrome},
+        # pprint(methods[random.randint(0, 7)])
+        r = requests.get(url, auth=(login, pasword), headers={'User-Agent': methods[random.randint(0, 7)]},
                          cookies=cookies)  # , auth=(login, pasword))
         # r.json()
         # r = session.get(url, verify=False)
