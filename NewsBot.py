@@ -68,6 +68,7 @@ def get_news(url):
         # session = requests.Session()
         # session.proxies.update(proxies)
         # session.headers.update(headers)
+        pprint(UserAgent().chrome)
         r = requests.get(url, auth=(login, pasword), headers={'User-Agent': UserAgent().chrome},
                          cookies=cookies)  # , auth=(login, pasword))
         # r.json()
