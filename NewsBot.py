@@ -19,6 +19,8 @@ BotDB = BotDB()
 btns = list(links.keys())
 htmls = {}
 t = False
+cookies = {"cookie": "news_lang=ru; nc=search-visits-per-week=1:1645123721000#tips=1645798458637;favorites-button:1; yandexuid=1979425991640958970; yuidss=1979425991640958970; ymex=1956318975.yrts.1640958975; _ym_uid=164095897515273997; is_gdpr=0; is_gdpr_b=CIayFBDgWSgC; L=ckx/fVN5cHZzbXJyfwJCVgZoAnpwAnByWio7IAR6Hlcr.1640959007.14843.312683.efc4def33cbaaa53ad367a64d4da598e; yandex_login=maxss.k2n; gdpr=0; mda=0; font_loaded=YSv1; my=YwA=; i=U/vzUFDe7PO+kpsVoLT6eac0oTN7BYEZuBTAwRAh3OZrq1zhgedIfYTf4fjRt27Kxh6Ry6wJwxrtJRk0lOZqaANsjs8=; yandex_gid=43; _ym_d=1645797372; skid=6003427361645797375; yabs-frequency=/5/100N07qH6M9WUXPY/knjpS9G0001OHI62OK5jXW0005H58m00/; sae=0:710DC4EF-8F5B-449A-8665-0C14D23D50E8:p:22.1.3.848:w:d:RU:20211231; _ym_isad=2; Session_id=3:1645878630.5.0.1640959007634:roHMsg:27.1.2:1|883187617.0.2|3:248655.102920.647C39U-P0QIWrT5cGhYT4H_KIE; sessionid2=3:1645878630.5.0.1640959007634:roHMsg:27.1.2:1|883187617.0.2|3:248655.102920.647C39U-P0QIWrT5cGhYT4H_KIE; _yasc=QHeKBWygd4ttAgF5OWyQjstvRZV+rEAD9bpeE8z9Ve2JfuvSYVlYuVdIhzWx5Gmn9neAWOw5Y4k=; ys=svt.1#def_bro.1#ead.2FECB7CF#wprid.1645881158388605-1960381277426502210-vla1-5252-vla-l7-balancer-8080-BAL-7970#ybzcc.ru#newsca.native_cache; yp=1672495029.cld.2261448#1672495029.brd.0699000036#1657951229.szm.1_25:1536x864:1536x726#1646844732.spcs.d#1645898711.mcv.0#1645898711.mcl.1695r7s#1645947913.mct.null#1645889371.gpauto.55_758244:49_238129:140:1:1645882171#1648306696.ygu.1#1646056573.clh.2261452#1648475785.csc.1; cycada=C2CM8CVQoOPbzjH2snlqlHueCwKFguvRs6qiAgaYLUo="}
+cookies1 = cookies
 
 
 def get_currency():
@@ -64,6 +66,7 @@ def get_horoscope(znak):
 # user_agent = UserAgent()
 
 def get_news(url):
+    global cookies
     try:
         ua = UserAgent()
         methods = [ua.ie, ua.msie, ua.opera, ua.chrome, ua.google, ua.firefox, ua.ff, ua.safari]
@@ -73,6 +76,10 @@ def get_news(url):
         # pprint(methods[random.randint(0, 7)])
         r = requests.get(url, auth=(login, pasword), headers={'User-Agent': methods[random.randint(0, 7)]},
                          cookies=cookies)  # , auth=(login, pasword))
+        if r.cookies:
+            cookies = r.cookies
+        else:
+            cookies = cookies1
         # r.json()
         # r = session.get(url, verify=False)
         html = BS(r.text, "html.parser")
@@ -84,6 +91,7 @@ def get_news(url):
             ur = html.find_all(class_="mg-card__link")
         else:
             print("Сайт не вернул данные")
+            print(url)
             news = []
             ur = []
         # print(news, ur)
