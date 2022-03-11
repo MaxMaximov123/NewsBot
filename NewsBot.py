@@ -8,7 +8,7 @@ from telebot import types
 from schedule import every, run_pending
 import time
 from threading import Thread
-#from fake_useragent import UserAgent
+# from fake_useragent import UserAgent
 from pprint import pprint
 
 bot = telebot.TeleBot(token)
@@ -45,7 +45,8 @@ def get_currency():
 
     return ((dolVal, dolProc), (euVal, euProc))
 
-#print(BotDB.get_modes(726169792))
+
+# print(BotDB.get_modes(726169792))
 # print("−" in get_currency()[0][1][0])
 
 def get_horoscope(znak):
@@ -56,23 +57,38 @@ def get_horoscope(znak):
     soup = html.select('p')
     return soup1, soup
 
-#user_agent = UserAgent()
+
+# user_agent = UserAgent()
 
 headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.174 YaBrowser/22.1.3.848 Yowser/2.5 Safari/537.36'}
+    'Connection': 'keep-alive',
+    'Cache-Control': 'max-age=0',
+    'Upgrade-Insecure-Requests': '1',
+    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36 OPR/40.0.2308.81',
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+    'DNT': '1',
+    'Accept-Encoding': 'gzip, deflate, lzma, sdch',
+    'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4'
+}
+
+proxies = {
+    "http": "http://proxy.example.com:8080",
+    "https": "http://secureproxy.example.com:8090"
+}
 
 
 def get_news(url):
     try:
-        r = requests.get(url, headers=headers, cookies=cookies)
+        r = requests.get(url, headers=headers, cookies=cookies, auth=(login, pasword))
         html = BS(r.text, "html.parser")
-        #print(html)
+        # print(html)
         if url == "https://yandex.ru/news":
             html = html.find(class_="mg-grid__row mg-grid__row_gap_8 news-top-flexible-stories news-app__top")
         if html:
             news = html.find_all(class_="mg-card__title")
             ur = html.find_all(class_="mg-card__link")
         else:
+            print("Сайт не вернул данные")
             news = []
             ur = []
         # print(news, ur)
@@ -96,13 +112,14 @@ def save_html():
         except Exception as error:
             bot.send_message(1387680086, "Ошибка при копирование html")
             print(error)
-        time.sleep(randint(5, 20) / 10)
+        time.sleep(randint(1, 5) / 10)
     if t:
         bot.send_message(1387680086, "проверка фонового включения25")
     print("ok")
 
 
 save_html()
+
 
 def send_news(chat_id, topic, article):
     # markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -194,8 +211,6 @@ def callback(call):
         print(error)
 
 
-
-
 def send_hor():
     bot.send_message(1387680086, "Вроде должна быть рассылка")
     markup1 = types.ReplyKeyboardMarkup(resize_keyboard=True)
@@ -204,7 +219,8 @@ def send_hor():
     for i in BotDB.get_id():  # [(1387680086, 999)]: #
         try:
             i = (int(i[0]), 999)
-            if "1" in BotDB.get_modes(i[0]) or "2" in BotDB.get_modes(i[0]) or "3" in BotDB.get_modes(i[0]) or BotDB.get_modes(i[0]) is None:
+            if "1" in BotDB.get_modes(i[0]) or "2" in BotDB.get_modes(i[0]) or "3" in BotDB.get_modes(
+                    i[0]) or BotDB.get_modes(i[0]) is None:
                 bot.send_message(i[0], "Утренние новости☕️📰:", reply_markup=markup1)
                 if "2" in BotDB.get_modes(i[0]) or BotDB.get_modes(i[0]) is None:
                     if BotDB.get_znak(i[0]) in btns:

@@ -1,5 +1,8 @@
 token = "5256387436:AAHU4l8HhLRHBBV-1YZxYwcn1BLSstpvVcs"
 
+login = "maxss.k2n@yandex.ru"
+pasword = "Blanik2007"
+
 
 links = {"Овен♈️": "https://horo.mail.ru/prediction/aries/today/",
          "Телец♉️": "https://horo.mail.ru/prediction/taurus/today/",
