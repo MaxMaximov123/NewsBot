@@ -4,6 +4,23 @@ login = "maxss.k2n@yandex.ru"
 pasword = "Blanik2007"
 
 
+headers = {
+    'Connection': 'keep-alive',
+    'Cache-Control': 'max-age=0',
+    'Upgrade-Insecure-Requests': '1',
+    'User-Agent': "Opera/9.80 (X11; Linux x86_64; U; de) Presto/2.2.15 Version/10.00",
+    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+    'DNT': '1',
+    'Accept-Encoding': 'gzip, deflate, lzma, sdch',
+    'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4'
+}
+
+proxies = {
+    "http": '112.246.105.237:8888',
+    "https": '58.55.254.222:7082'
+}
+
+
 links = {"Овен♈️": "https://horo.mail.ru/prediction/aries/today/",
          "Телец♉️": "https://horo.mail.ru/prediction/taurus/today/",
          "Близнецы♊️": "https://horo.mail.ru/prediction/gemini/today/",

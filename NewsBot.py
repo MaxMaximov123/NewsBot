@@ -8,6 +8,7 @@ from telebot import types
 from schedule import every, run_pending
 import time
 from threading import Thread
+from fake_useragent import UserAgent
 # from fake_useragent import UserAgent
 from pprint import pprint
 
@@ -60,26 +61,17 @@ def get_horoscope(znak):
 
 # user_agent = UserAgent()
 
-headers = {
-    'Connection': 'keep-alive',
-    'Cache-Control': 'max-age=0',
-    'Upgrade-Insecure-Requests': '1',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36 OPR/40.0.2308.81',
-    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-    'DNT': '1',
-    'Accept-Encoding': 'gzip, deflate, lzma, sdch',
-    'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.6,en;q=0.4'
-}
-
-proxies = {
-    "http": "http://proxy.example.com:8080",
-    "https": "http://secureproxy.example.com:8090"
-}
-
 
 def get_news(url):
     try:
-        r = requests.get(url, headers=headers, cookies=cookies, auth=(login, pasword))
+
+        # session = requests.Session()
+        # session.proxies.update(proxies)
+        # session.headers.update(headers)
+        r = requests.get(url, auth=(login, pasword), headers={'User-Agent': UserAgent().chrome},
+                         cookies=cookies)  # , auth=(login, pasword))
+        # r.json()
+        # r = session.get(url, verify=False)
         html = BS(r.text, "html.parser")
         # print(html)
         if url == "https://yandex.ru/news":
@@ -94,7 +86,7 @@ def get_news(url):
         # print(news, ur)
         return news, ur
     except Exception as error:
-        print(error)
+        pprint(error)
         print("bad")
         return [], ""
 
