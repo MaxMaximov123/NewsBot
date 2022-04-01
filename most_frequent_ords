@@ -1,0 +1,18 @@
+import sqlite3
+import telebot
+
+
+connec = sqlite3.connect('orders_base')
+curs = connec.cursor()
+curs.execute("ВАШ-SQL-ЗАПРОС-ЗДЕСЬ;")
+curs.execute("""CREATE TABLE IF NOT EXISTS usernames(
+   userid INT PRIMARY KEY,
+   most_frec_ord TEXT,
+   gender TEXT);
+""")
+connec.commit()
+
+
+#curs.execute("""INSERT INTO users(userid, most_frec_ord, gender)
+#   VALUES( < хз пока как взять id пользователя >);""")
+#connec.commit()
