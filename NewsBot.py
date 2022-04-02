@@ -58,7 +58,7 @@ def get_horoscope(znak):
     return soup1, soup
 
 
-user_agent = UserAgent()
+# user_agent = UserAgent()
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.174 YaBrowser/22.1.3.848 Yowser/2.5 Safari/537.36'}
