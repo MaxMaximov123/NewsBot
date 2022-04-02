@@ -10,12 +10,24 @@ import time
 from threading import Thread
 from fake_useragent import UserAgent
 from pprint import pprint
+import datetime
 
 bot = telebot.TeleBot(token)
 BotDB = BotDB()
 btns = list(links.keys())
 htmls = {}
+admin = 1387680086
 t = False
+
+
+def birthday():
+    day = str(int(datetime.date.today().strftime('%d')))
+    month = str(int(datetime.date.today().strftime('%m')))
+    data = '.'.join([day, month])
+    for i in BotDB.get_id():
+        i = i[0]
+        if BotDB.get_birth(i) == data:
+            bot.send_message(i, "Дорогой пользователь, поздравляю Вас с днем рождения, спасибо, что Вы с нами!🥳")
 
 
 def get_currency():
@@ -195,6 +207,7 @@ def callback(call):
 
 def send_hor():
     bot.send_message(1387680086, "Вроде должна быть рассылка")
+    birthday()
     markup1 = types.ReplyKeyboardMarkup(resize_keyboard=True)
     back = types.KeyboardButton(text="Меню↩")
     markup1.add(back)
@@ -344,6 +357,7 @@ def chat(message):
         BotDB.update_status(message.chat.id, "pass")
 
     if BotDB.get_status(message.chat.id) == "welcome":
+        BotDB.add_birth(message.chat.id, message.text)
         data = list(map(int, message.text.split(".")))
         if len(data) == 2 and 0 < data[0] < 32 and 0 < data[1] < 13:
             znak = "Овен"

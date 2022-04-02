@@ -1,34 +1,36 @@
 import psycopg2
 
 
-# try:
-#     conn = psycopg2.connect(user="thszlocyntmmgg",
-#                             # пароль, который указали при установке PostgreSQL
-#                             password="daea238bb862af4128bd5a075824f4e2ad4fa8242fb36b8535e5a3e663b0b1c2",
-#                             host="ec2-63-34-130-73.eu-west-1.compute.amazonaws.com",
-#                             port="5432",
-#                             database="djjpvsdhnc9pl")
-#
-#     # Создайте курсор для выполнения операций с базой данных
-#     cursor = conn.cursor()
-#     # SQL-запрос для создания новой таблицы
-#     # create_table_query = '''CREATE TABLE trackers
-#     #                       (ID          BIGINT,
-#     #                       ZNAK       TEXT,
-#     #                       NAME         TEXT,
-#     #                       USERNAME      TEXT); '''
-#     # Выполнение команды: это создает новую таблицу
-#     # cursor.execute(create_table_query)
-#     cursor.execute("""ALTER TABLE trackers ADD COLUMN modes TEXT;""")
-#     conn.commit()
-#     print(546)
-# except (Exception, psycopg2.Error) as error:
-#     print("Ошибка при работе с PostgreSQL", error)
-# finally:
-#     if conn:
-#         cursor.close()
-#         conn.close()
-# print("Соединение с PostgreSQL закрыто")
+a = 0
+if a:
+    try:
+        conn = psycopg2.connect(user="thszlocyntmmgg",
+                                # пароль, который указали при установке PostgreSQL
+                                password="daea238bb862af4128bd5a075824f4e2ad4fa8242fb36b8535e5a3e663b0b1c2",
+                                host="ec2-63-34-130-73.eu-west-1.compute.amazonaws.com",
+                                port="5432",
+                                database="djjpvsdhnc9pl")
+
+        # Создайте курсор для выполнения операций с базой данных
+        cursor = conn.cursor()
+        # SQL-запрос для создания новой таблицы
+        # create_table_query = '''CREATE TABLE trackers
+        #                       (ID          BIGINT,
+        #                       ZNAK       TEXT,
+        #                       NAME         TEXT,
+        #                       USERNAME      TEXT); '''
+        # Выполнение команды: это создает новую таблицу
+        # cursor.execute(create_table_query)
+        cursor.execute("""ALTER TABLE trackers ADD COLUMN birthday TEXT;""")
+        conn.commit()
+        print(546)
+    except (Exception, psycopg2.Error) as error:
+        print("Ошибка при работе с PostgreSQL", error)
+    finally:
+        if conn:
+            cursor.close()
+            conn.close()
+    print("Соединение с PostgreSQL закрыто")
 
 
 class BotDB:
@@ -90,4 +92,13 @@ class BotDB:
 
     def get_modes(self, id):
         self.cursor.execute("SELECT modes FROM trackers WHERE id = %s", (id,))
+        return self.cursor.fetchone()[0]
+
+    def add_birth(self, id, data):
+        data = '.'.join(list(map(str, list(map(int, data.split('.'))))))
+        self.cursor.execute("UPDATE trackers SET birthday = %s WHERE id = %s", (data, id))
+        return self.conn.commit()
+
+    def get_birth(self, id):
+        self.cursor.execute("SELECT birthday FROM trackers WHERE id = %s", (id,))
         return self.cursor.fetchone()[0]
