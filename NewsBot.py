@@ -33,7 +33,7 @@ def get_currency():
 
     r = requests.get("https://invest.yandex.ru/catalog/currency/eur/")
     html = BS(r.content, "html.parser")
-    euVal = html.find_all(class_="QV5TZ0Aew_2aahfCgGmv")[0].text
+    euVal = html.find_all(class_="QV5TZ0Aew_2aahfCgGmv")[1].text
     try:
         euProc = html.find_all(class_="rzv7e6OPChq71rCQBr9H _9RS0xgK34zINnxUjOgH")
         if len(euProc) > 0:
