@@ -20,14 +20,12 @@ admin = 1387680086
 t = False
 
 
-def birthday():
+def birthday(id):
     day = str(int(datetime.date.today().strftime('%d')))
     month = str(int(datetime.date.today().strftime('%m')))
     data = '.'.join([day, month])
-    for i in BotDB.get_id():
-        i = i[0]
-        if BotDB.get_birth(i) == data:
-            bot.send_message(i, "Дорогой пользователь, поздравляю Вас с днем рождения, спасибо, что Вы с нами!🥳")
+    if BotDB.get_birth(id) == data:
+        bot.send_message(id, "Дорогой пользователь, поздравляю Вас с днем рождения, спасибо, что Вы с нами!🥳")
 
 
 def get_currency():
@@ -207,13 +205,13 @@ def callback(call):
 
 def send_hor():
     bot.send_message(1387680086, "Вроде должна быть рассылка")
-    birthday()
     markup1 = types.ReplyKeyboardMarkup(resize_keyboard=True)
     back = types.KeyboardButton(text="Меню↩")
     markup1.add(back)
     for i in BotDB.get_id():  # [(1387680086, 999)]: #
         try:
             i = (int(i[0]), 999)
+            birthday(i[0])
             if "1" in BotDB.get_modes(i[0]) or "2" in BotDB.get_modes(i[0]) or "3" in BotDB.get_modes(
                     i[0]) or BotDB.get_modes(i[0]) is None:
                 bot.send_message(i[0], "Утренние новости☕️📰:", reply_markup=markup1)
@@ -438,6 +436,7 @@ def chat(message):
         markup1.add(home)
         bot.send_message(message.chat.id, "Чтобы вернуться, нажмите кнопку меню", reply_markup=markup1)
         markup = types.InlineKeyboardMarkup()
+        btn_0 = types.InlineKeyboardButton(text='Глвное❗', callback_data="https://yandex.ru/news")
         btn_1 = types.InlineKeyboardButton(text='Казань🕌', callback_data="https://yandex.ru/news/region/kazan")
         btn_2 = types.InlineKeyboardButton(text='Коронавирус🦠',
                                            callback_data="https://yandex.ru/news/rubric/koronavirus")
@@ -449,6 +448,7 @@ def chat(message):
                                            callback_data="https://yandex.ru/news/rubric/incident")
         btn_7 = types.InlineKeyboardButton(text='Культура🎨', callback_data="https://yandex.ru/news/rubric/culture")
         btn_8 = types.InlineKeyboardButton(text='Технологии💻', callback_data="https://yandex.ru/news/rubric/computers")
+        markup.add(btn_0)
         markup.add(btn_1)
         markup.add(btn_2)
         markup.add(btn_3)
