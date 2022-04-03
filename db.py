@@ -14,14 +14,18 @@ if a:
         # Создайте курсор для выполнения операций с базой данных
         cursor = conn.cursor()
         # SQL-запрос для создания новой таблицы
-        # create_table_query = '''CREATE TABLE trackers
-        #                       (ID          BIGINT,
-        #                       ZNAK       TEXT,
-        #                       NAME         TEXT,
-        #                       USERNAME      TEXT); '''
+        create_table_query = '''CREATE TABLE trackers
+                              (ID          BIGINT,
+                              ZNAK       TEXT,
+                              NAME         TEXT,
+                              USERNAME      TEXT,
+                              TOPIC         TEXT,
+                              ARTICLE       INT,
+                              MODES         TEXT,
+                              BIRTHDAY      TEXT); '''
         # Выполнение команды: это создает новую таблицу
         # cursor.execute(create_table_query)
-        cursor.execute("""ALTER TABLE trackers ADD COLUMN birthday TEXT;""")
+        cursor.execute("""ALTER TABLE trackers ADD COLUMN status TEXT;""")
         conn.commit()
         print(546)
     except (Exception, psycopg2.Error) as error:
