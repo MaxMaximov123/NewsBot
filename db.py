@@ -4,12 +4,12 @@ import psycopg2
 a = 0
 if a:
     try:
-        conn = psycopg2.connect(user="thszlocyntmmgg",
+        conn = psycopg2.connect(user="mfitezskzynjlh",
                                 # пароль, который указали при установке PostgreSQL
-                                password="daea238bb862af4128bd5a075824f4e2ad4fa8242fb36b8535e5a3e663b0b1c2",
-                                host="ec2-63-34-130-73.eu-west-1.compute.amazonaws.com",
+                                password="f1fee7852b0c2a6d957fd5fff2c874a19ae06ecc1062bdc655fbf1b41c12836c",
+                                host="ec2-34-246-227-219.eu-west-1.compute.amazonaws.com",
                                 port="5432",
-                                database="djjpvsdhnc9pl")
+                                database="d17vgbfokvor7q")
 
         # Создайте курсор для выполнения операций с базой данных
         cursor = conn.cursor()
@@ -22,7 +22,7 @@ if a:
                               TOPIC         TEXT,
                               ARTICLE       INT,
                               MODES         TEXT,
-                              BIRTHDAY      TEXT); '''
+                              BIRTHDAY      TEXT);'''
         # Выполнение команды: это создает новую таблицу
         # cursor.execute(create_table_query)
         cursor.execute("""ALTER TABLE trackers ADD COLUMN status TEXT;""")
@@ -39,19 +39,21 @@ if a:
 
 class BotDB:
     def __init__(self):
-        self.conn = psycopg2.connect(user="thszlocyntmmgg",
-                                     password="daea238bb862af4128bd5a075824f4e2ad4fa8242fb36b8535e5a3e663b0b1c2",
-                                     host="ec2-63-34-130-73.eu-west-1.compute.amazonaws.com",
-                                     port="5432",
-                                     database="djjpvsdhnc9pl")
+        self.conn = psycopg2.connect(user="mfitezskzynjlh",
+                                # пароль, который указали при установке PostgreSQL
+                                password="f1fee7852b0c2a6d957fd5fff2c874a19ae06ecc1062bdc655fbf1b41c12836c",
+                                host="ec2-34-246-227-219.eu-west-1.compute.amazonaws.com",
+                                port="5432",
+                                database="d17vgbfokvor7q")
         self.cursor = self.conn.cursor()
 
     def user_exists(self, id):
         self.cursor.execute("SELECT * FROM trackers WHERE id = %s", (id,))
         return bool(len(self.cursor.fetchall()))
 
-    def add_user(self, id, status, name, username, znak):
-        self.cursor.execute("INSERT INTO trackers (id, name, status, username, znak) VALUES (%s, %s, %s, %s, %s)", (id, name, status, username, znak))
+    def add_user(self, id, status, name, username, znak, modes):
+        self.cursor.execute("INSERT INTO trackers (id, name, status, username, znak, modes) VALUES "
+                            "(%s, %s, %s, %s, %s, %s)", (id, name, status, username, znak, modes))
         return self.conn.commit()
 
     def update_status(self, id, new_status):
@@ -105,4 +107,12 @@ class BotDB:
 
     def get_birth(self, id):
         self.cursor.execute("SELECT birthday FROM trackers WHERE id = %s", (id,))
+        return self.cursor.fetchone()[0]
+
+    def update_case(self, id, stonk):
+        self.cursor.execute("UPDATE trackers SET case_ = %s WHERE id = %s", (stonk, id))
+        return self.conn.commit()
+
+    def get_case(self, id):
+        self.cursor.execute("SELECT case_ FROM trackers WHERE id = %s", (id,))
         return self.cursor.fetchone()[0]

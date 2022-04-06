@@ -1,4 +1,5 @@
 token = "5294280651:AAFQPsoq83YaVFuVchNRwBDnR4KSCUqQWRc"
+token1 = "5149866452:AAGx1cymIUtKcOqWwajMOr5RNj7I5QdKlZA"
 
 login = "maxss.k2n@yandex.ru"
 pasword = "Blanik2007"

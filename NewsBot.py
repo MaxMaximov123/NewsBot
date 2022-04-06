@@ -9,10 +9,16 @@ from schedule import every, run_pending
 import time
 from threading import Thread
 from fake_useragent import UserAgent
+import json
+from investing import stonks
 from pprint import pprint
 import datetime
 
-bot = telebot.TeleBot(token)
+Beta = False
+if Beta:
+    bot = telebot.TeleBot(token1)
+else:
+    bot = telebot.TeleBot(token)
 BotDB = BotDB()
 btns = list(links.keys())
 htmls = {}
@@ -78,7 +84,11 @@ user_agent = UserAgent()
 
 headers = {
     'cookie': 'news_lang=ru; nc=search-visits-per-week=1:1645123721000#tips=1645798458637%3Bfavorites-button:1; yandexuid=1979425991640958970; yuidss=1979425991640958970; ymex=1956318975.yrts.1640958975; _ym_uid=164095897515273997; is_gdpr=0; is_gdpr_b=CIayFBDgWSgC; L=ckx/fVN5cHZzbXJyfwJCVgZoAnpwAnByWio7IAR6Hlcr.1640959007.14843.312683.efc4def33cbaaa53ad367a64d4da598e; yandex_login=maxss.k2n; gdpr=0; mda=0; font_loaded=YSv1; my=YwA=; yandex_gid=141075; _ym_d=1646636780; _ym_isad=2; Session_id=3:1648930876.5.0.1640959007634:roHMsg:27.1.2:1|883187617.0.2|3:250351.906862.f9yBA7XrLdnkaUZVJ3D9weBtfCI; sessionid2=3:1648930876.5.0.1640959007634:roHMsg:27.1.2:1|883187617.0.2|3:250351.906862.f9yBA7XrLdnkaUZVJ3D9weBtfCI; i=P4LZY/kmCKVsJpcqBDFI9VCcTVeFozSw++sP2A3eqppbiKc+AYbF4FbB/BwKkk0q9d794Pi1mldi5aD0JNIyAujqROI=; sae=0:710DC4EF-8F5B-449A-8665-0C14D23D50E8:p:22.3.0.2430:w:d:RU:20211231; yabs-frequency=/5/0G0V09DlIM87GKbY/Uwi3wsa5ArFiHI40/; _yasc=nI/LzQHjTvQRb0qP7l8ZKzhNBODFqnYlUbLFvZzVMSxe2Z7zl3ihfI2WqB53dTJb4s1eKbDKSQkPug==; ys=svt.1#def_bro.1#ead.2FECB7CF#wprid.1648989185386508-3330288641589190498-vla1-4623-vla-l7-balancer-8080-BAL-6258#ybzcc.ru#newsca.native_cache; _ym_visorc=w; yp=1672495029.cld.2261448#1672495029.brd.0699000036#1657951229.szm.1_25:1536x864:1536x726#1649228778.ygu.1#1649315189.csc.1#1649185034.mct.null#1649067766.nwcst.1648982400_43_3#1649538359.mcv.0#1649538359.mcl.1695r7s#1649001192.gpauto.55_796288:49_108795:100000:3:1648993992; cycada=zyYNyq0LxmtTDlf5OyTyALaqTBF4gvSVGzF6KKxkNI0=',
-    'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.119 YaBrowser/22.3.0.2430 Yowser/2.5 Safari/537.36'}
+    'user-agent': UserAgent().random,
+    'x-content-type-options': 'nosniff',
+    'x-xss-protection': '1; mode = block',
+    'x-yandex-req-id': '1649172793088961 - 9677378295724091123 - b4cdtzh6jefk6hgl - BAL - 6932'
+}
 
 
 def get_news(url):
@@ -117,14 +127,34 @@ def save_html():
     print("ok")
 
 
+stonks_ = {}
+stonks1 = {}
+stonks2 = {}
+
+
+def save_stonks():
+    k = 0
+    for i in stonks():
+        stonks_[i[0]] = i
+        stonks1[i[0].lower()] = i[0]
+        stonks1[i[1].lower()] = i[0]
+        stonks2[i[0]] = k
+        stonks2[str(k)] = i[0]
+        k += 1
+
+
 # for i in range(10):
 #     for j in urls:
 #         pprint(get_news(j))
 #
 #     time.sleep(0.5)
 
+def save_all():
+    save_html()
+    save_stonks()
 
-save_html()
+
+save_all()
 
 
 def send_news(chat_id, topic, article):
@@ -160,15 +190,15 @@ def callback(call):
                 BotDB.update_modes(call.message.chat.id, "123")
             true_modes = set(BotDB.get_modes(call.message.chat.id))
             markup = types.InlineKeyboardMarkup()
-            if BotDB.get_modes(call.message.chat.id) == None or "1" in true_modes:
+            if "1" in true_modes:
                 btn_1 = types.InlineKeyboardButton(text='Новости📰   ✅', callback_data="mode 1")
             else:
                 btn_1 = types.InlineKeyboardButton(text='Новости📰   ❌', callback_data="not_mode 1")
-            if BotDB.get_modes(call.message.chat.id) == None or "2" in true_modes:
+            if "2" in true_modes:
                 btn_2 = types.InlineKeyboardButton(text='Гороскоп💫  ✅', callback_data="mode 2")
             else:
                 btn_2 = types.InlineKeyboardButton(text='Гороскоп💫  ❌', callback_data="not_mode 2")
-            if BotDB.get_modes(call.message.chat.id) == None or "3" in true_modes:
+            if "3" in true_modes:
                 btn_3 = types.InlineKeyboardButton(text='Курсы валют💰   ✅', callback_data="mode 3")
             else:
                 btn_3 = types.InlineKeyboardButton(text='Курсы валют💰   ❌', callback_data="not_mode 3")
@@ -200,6 +230,29 @@ def callback(call):
             bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
                                   text="Выберите категории рассылки",
                                   reply_markup=markup)
+        elif BotDB.get_status(call.message.chat.id) == 'invest_case_add1':
+            z = stonks2[call.data.split('_')[1]]
+            if BotDB.get_case(call.message.chat.id):
+                print(call.data)
+                BotDB.update_case(call.message.chat.id, BotDB.get_case(call.message.chat.id) + '_' +
+                                  stonks2[call.data.split('_')[1]])
+            else:
+                BotDB.update_case(call.message.chat.id, stonks2[call.data.split('_')[1]])
+            bot.send_message(call.message.chat.id, f'Акция <{z}> добавлена в портфель')
+        elif BotDB.get_status(call.message.chat.id) == 'invest_case_del':
+            inv = set(BotDB.get_case(call.message.chat.id).split('_'))
+            k = stonks2[call.data.split('_')[1]]
+            inv = inv - set(k)
+            inv = '_'.join(list(inv))
+            BotDB.update_case(call.message.chat.id, inv)
+            bot.send_message(call.message.chat.id, f'Акция <{k}> удалена')
+
+        elif BotDB.get_status(call.message.chat.id) == 'invest_statis':
+            data = list(map(str, stonks_[call.data]))
+            bot.send_message(call.message.chat.id, f'''Акция "{data[0]}", краткое "{data[1]}"
+Динамика в сравнении с прошлым торговым днем: {data[3]}%
+Риск этой позиции: {data[4]}
+Стоимость одной акции: {data[5]} {data[6]}''')
         elif call.data == "skip":
             send_news(call.message.chat.id, BotDB.get_topic(call.message.chat.id),
                       BotDB.get_article(call.message.chat.id))
@@ -269,7 +322,7 @@ def send_hor():
 
 
 every().day.at("05:00").do(send_hor)
-every(randint(5, 7)).minutes.do(save_html)
+every(randint(10, 15)).minutes.do(save_all)
 
 
 def work():
@@ -301,7 +354,7 @@ def welcome(message):
                              message.from_user))
         if not BotDB.user_exists(message.chat.id):
             BotDB.add_user(message.chat.id, "welcome", "{0.first_name}".format(message.from_user),
-                           message.from_user.username, "pass")
+                           message.from_user.username, "pass", '123')
         else:
             BotDB.update_status(message.chat.id, "welcome")
     else:
@@ -311,8 +364,9 @@ def welcome(message):
         btn1 = types.KeyboardButton(text="Гороскопы🪐")
         btn2 = types.KeyboardButton(text="Курсы валют💰")
         btn3 = types.KeyboardButton(text="Новости📰")
+        btn5 = types.KeyboardButton(text="Инвестиции📈")
         btn4 = types.KeyboardButton(text="Настройки⚙")
-        markup.add(btn1, btn2, btn3, btn4)
+        markup.add(btn1, btn2, btn3, btn5, btn4)
         bot.send_message(message.chat.id, "Вы в меню", reply_markup=markup)
 
 
@@ -349,9 +403,21 @@ def chat(message):
     if message.text == "False" and message.chat.id == 1387680086:
         t = False
         bot.send_message(message.chat.id, "False2")
+    if message.text == 'Назад↩':
+        BotDB.update_status(message.chat.id, 'invest')
+    if message.text == 'Инвестиции📈' and BotDB.get_status(message.chat.id) == 'menu':
+        BotDB.update_status(message.chat.id, "invest")
+    if message.text == 'Добавить акцию✅' and BotDB.get_status(message.chat.id) == 'invest_case':
+        BotDB.update_status(message.chat.id, "invest_case_add")
+    if message.text == 'Удалить акцию🚫' and BotDB.get_status(message.chat.id) == 'invest_case':
+        BotDB.update_status(message.chat.id, "invest_case_del")
+    if message.text == 'Мои акции🧮':
+        BotDB.update_status(message.chat.id, "invest_statis")
+    if message.text == 'Мой портфель💼':
+        BotDB.update_status(message.chat.id, "invest_case")
     if message.text == "Меню↩":
         BotDB.update_status(message.chat.id, "menu")
-    if message.text == "Гороскопы🪐":
+    if message.text == "Гороскопы🪐" and BotDB.get_status(message.chat.id) == 'menu':
         BotDB.update_status(message.chat.id, "horoscope")
     if message.text == "Новости📰" or message.text == "⬅Назад":
         BotDB.update_status(message.chat.id, "news")
@@ -367,6 +433,20 @@ def chat(message):
         for i in get_horoscope(message.text)[1]:
             bot.send_message(message.chat.id, i.text, reply_markup=markup)
         BotDB.update_status(message.chat.id, "pass")
+
+    if BotDB.get_status(message.chat.id) == 'invest_case_add1':
+        markup = types.InlineKeyboardMarkup()
+        t = True
+        for i in stonks1:
+            if message.text.lower() in i:
+                t = False
+                cal = 'add_' + str(stonks2[stonks1[i]])
+                markup.add(types.InlineKeyboardButton(text=str(stonks1[i]), callback_data=cal))
+        if not t:
+            bot.send_message(message.chat.id, 'Вот все, что удалось найти, выберите ту, которую хотите добавить',
+                         reply_markup=markup)
+        else:
+            bot.send_message(message.chat.id, 'По вашему запросу ничего не найдено')
 
     if BotDB.get_status(message.chat.id) == "welcome":
         BotDB.add_birth(message.chat.id, message.text)
@@ -473,13 +553,74 @@ def chat(message):
         markup.add(btn_8)
         bot.send_message(message.chat.id, "Выберите тему", reply_markup=markup)
 
+    if BotDB.get_status(message.chat.id) == 'invest_statis':
+        markup = types.ReplyKeyboardMarkup(row_width=3, resize_keyboard=True)
+        markup.add(types.KeyboardButton(text="Назад↩"))
+        bot.send_message(message.chat.id, 'Чтобы вернуться нажмите "Назад"', reply_markup=markup)
+        markup = types.InlineKeyboardMarkup()
+        if BotDB.get_case(message.chat.id):
+            for i in BotDB.get_case(message.chat.id).split('_'):
+                markup.add(types.InlineKeyboardButton(text=i, callback_data=i))
+            bot.send_message(message.chat.id, 'Для просмотра данных выберите акцию из вашего портфеля', reply_markup=markup)
+        else:
+            markup = types.ReplyKeyboardMarkup(row_width=3, resize_keyboard=True)
+            markup.add(types.KeyboardButton(text="Назад↩"))
+            bot.send_message(message.chat.id, 'У вас нет акций, их можно добавить в разделе "Портфель"', reply_markup=markup)
+
+    if BotDB.get_status(message.chat.id) == 'invest_case':
+        markup = types.ReplyKeyboardMarkup(row_width=3, resize_keyboard=True)
+        back = types.KeyboardButton(text="Назад↩")
+        btn1 = types.KeyboardButton(text="Добавить акцию✅")
+        btn2 = types.KeyboardButton(text="Удалить акцию🚫")
+        markup.add(back, btn1, btn2)
+        bot.send_message(message.chat.id, "Вы заашли в раздел портфель, здесь вы можете редактировать свой портфель",
+                         reply_markup=markup)
+        mes = 'В вашем портфеле:'
+        for i in BotDB.get_case(message.chat.id).split('_'):
+            mes += f'\n-{i}'
+        bot.send_message(message.chat.id, mes)
+
+
+    if BotDB.get_status(message.chat.id) == 'invest':
+        markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
+        back = types.KeyboardButton(text="Меню↩")
+        btn1 = types.KeyboardButton(text="Мой портфель💼")
+        btn2 = types.KeyboardButton(text='Мои акции🧮')
+        markup.add(back, btn2, btn1)
+        bot.send_message(message.chat.id, 'вы зашли в раздел инвестициий', reply_markup=markup)
+
+    if BotDB.get_status(message.chat.id) == 'invest_case_add':
+        markup = types.ReplyKeyboardMarkup(row_width=3, resize_keyboard=True)
+        markup.add(types.KeyboardButton(text="Назад↩"))
+        bot.send_message(message.chat.id, 'Введите полное или краткое название акции, я постараюсь что-то найти',
+                         reply_markup=markup)
+        BotDB.update_status(message.chat.id, 'invest_case_add1')
+
+    if BotDB.get_status(message.chat.id) == 'invest_case_del':
+        markup = types.ReplyKeyboardMarkup(row_width=3, resize_keyboard=True)
+        markup.add(types.KeyboardButton(text="Назад↩"))
+        bot.send_message(message.chat.id, 'Чтобы вернуться нажмите "Назад"', reply_markup=markup)
+        markup = types.InlineKeyboardMarkup()
+        if BotDB.get_case(message.chat.id):
+            for i in BotDB.get_case(message.chat.id).split('_'):
+                cal = 'del_' + str(stonks2[i])
+                markup.add(types.InlineKeyboardButton(text=i, callback_data=cal))
+            bot.send_message(message.chat.id, 'Выберите акцию, которую хотите удалить',
+                             reply_markup=markup)
+        else:
+            markup = types.ReplyKeyboardMarkup(row_width=3, resize_keyboard=True)
+            markup.add(types.KeyboardButton(text="Назад↩"))
+            bot.send_message(message.chat.id, 'У вас нет акций, их можно добавить в разделе "Портфель"',
+                             reply_markup=markup)
+
     if BotDB.get_status(message.chat.id) == "menu":
         markup = types.ReplyKeyboardMarkup(row_width=3, resize_keyboard=True)
         btn1 = types.KeyboardButton(text="Гороскопы🪐")
         btn2 = types.KeyboardButton(text="Курсы валют💰")
         btn3 = types.KeyboardButton(text="Новости📰")
+        btn5 = types.KeyboardButton(text="Инвестиции📈")
         btn4 = types.KeyboardButton(text="Настройки⚙")
-        markup.add(btn1, btn2, btn3, btn4)
+        markup.add(btn1, btn2, btn3, btn5, btn4)
         bot.send_message(message.chat.id, "Вы в меню", reply_markup=markup)
 
     if BotDB.get_status(message.chat.id) == "horoscope":
@@ -527,15 +668,15 @@ def chat(message):
         markup1.add(back)
         bot.send_message(message.chat.id, "Чтобы вернуться, нажмите кнопку меню", reply_markup=markup1)
         markup = types.InlineKeyboardMarkup()
-        if BotDB.get_modes(message.chat.id) == None or "1" in BotDB.get_modes(message.chat.id):
+        if "1" in BotDB.get_modes(message.chat.id):
             btn_1 = types.InlineKeyboardButton(text='Новости📰   ✅', callback_data="mode 1")
         else:
             btn_1 = types.InlineKeyboardButton(text='Новости📰   ❌', callback_data="not_mode 1")
-        if BotDB.get_modes(message.chat.id) == None or "2" in BotDB.get_modes(message.chat.id):
+        if "2" in BotDB.get_modes(message.chat.id):
             btn_2 = types.InlineKeyboardButton(text='Гороскоп💫  ✅', callback_data="mode 2")
         else:
             btn_2 = types.InlineKeyboardButton(text='Гороскоп💫  ❌', callback_data="not_mode 2")
-        if BotDB.get_modes(message.chat.id) == None or "3" in BotDB.get_modes(message.chat.id):
+        if "3" in BotDB.get_modes(message.chat.id):
             btn_3 = types.InlineKeyboardButton(text='Курсы валют💰   ✅', callback_data="mode 3")
         else:
             btn_3 = types.InlineKeyboardButton(text='Курсы валют💰   ❌', callback_data="not_mode 3")
