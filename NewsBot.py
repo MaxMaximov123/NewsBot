@@ -242,7 +242,7 @@ def callback(call):
         elif BotDB.get_status(call.message.chat.id) == 'invest_case_del':
             inv = set(BotDB.get_case(call.message.chat.id).split('_'))
             k = stonks2[call.data.split('_')[1]]
-            inv = inv - set(k)
+            inv.remove(k)
             inv = '_'.join(list(inv))
             BotDB.update_case(call.message.chat.id, inv)
             bot.send_message(call.message.chat.id, f'Акция <{k}> удалена')
