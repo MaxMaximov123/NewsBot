@@ -573,13 +573,12 @@ def chat(message):
         btn1 = types.KeyboardButton(text="Добавить акцию✅")
         btn2 = types.KeyboardButton(text="Удалить акцию🚫")
         markup.add(back, btn1, btn2)
-        bot.send_message(message.chat.id, "Вы заашли в раздел портфель, здесь вы можете редактировать свой портфель",
+        bot.send_message(message.chat.id, "Вы зашли в раздел портфель, здесь вы можете редактировать свой портфель",
                          reply_markup=markup)
         mes = 'В вашем портфеле:'
         for i in BotDB.get_case(message.chat.id).split('_'):
             mes += f'\n-{i}'
         bot.send_message(message.chat.id, mes)
-
 
     if BotDB.get_status(message.chat.id) == 'invest':
         markup = types.ReplyKeyboardMarkup(resize_keyboard=True)
