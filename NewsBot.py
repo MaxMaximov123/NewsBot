@@ -135,12 +135,13 @@ stonks2 = {}
 def save_stonks():
     k = 0
     for i in stonks():
-        stonks_[i[0]] = i
-        stonks1[i[0].lower()] = i[0]
-        stonks1[i[1].lower()] = i[0]
-        stonks2[i[0]] = k
-        stonks2[str(k)] = i[0]
-        k += 1
+        if i:
+            stonks_[i[0]] = i
+            stonks1[i[0].lower()] = i[0]
+            stonks1[i[1].lower()] = i[0]
+            stonks2[i[0]] = k
+            stonks2[str(k)] = i[0]
+            k += 1
 
 
 # for i in range(10):
