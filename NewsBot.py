@@ -14,6 +14,7 @@ from investing import stonks
 from pprint import pprint
 import datetime
 
+
 Beta = False
 if Beta:
     bot = telebot.TeleBot(token1)
@@ -75,7 +76,6 @@ def get_horoscope(znak):
 
 
 user_agent = UserAgent()
-
 # headers = {
 #   'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.174 YaBrowser/22.1.3.848 Yowser/2.5 Safari/537.36',
 #  'Cookies': 'news_lang=ru; nc=search-visits-per-week=1:1645123721000#tips=1645798458637%3Bfavorites-button:1; yandexuid=1979425991640958970; yuidss=1979425991640958970; ymex=1956318975.yrts.1640958975; _ym_uid=164095897515273997; is_gdpr=0; is_gdpr_b=CIayFBDgWSgC; L=ckx/fVN5cHZzbXJyfwJCVgZoAnpwAnByWio7IAR6Hlcr.1640959007.14843.312683.efc4def33cbaaa53ad367a64d4da598e; yandex_login=maxss.k2n; gdpr=0; mda=0; font_loaded=YSv1; my=YwA=; yandex_gid=141075; _ym_d=1646636780; _ym_isad=2; Session_id=3:1648930876.5.0.1640959007634:roHMsg:27.1.2:1|883187617.0.2|3:250351.906862.f9yBA7XrLdnkaUZVJ3D9weBtfCI; sessionid2=3:1648930876.5.0.1640959007634:roHMsg:27.1.2:1|883187617.0.2|3:250351.906862.f9yBA7XrLdnkaUZVJ3D9weBtfCI; i=P4LZY/kmCKVsJpcqBDFI9VCcTVeFozSw++sP2A3eqppbiKc+AYbF4FbB/BwKkk0q9d794Pi1mldi5aD0JNIyAujqROI=; sae=0:710DC4EF-8F5B-449A-8665-0C14D23D50E8:p:22.3.0.2430:w:d:RU:20211231; yabs-frequency=/5/0G0V09DlIM87GKbY/Uwi3wsa5ArFiHI40/; ys=svt.1#def_bro.1#ead.2FECB7CF#wprid.1648986756778026-6320314446020442131-vla1-4623-vla-l7-balancer-8080-BAL-7425#ybzcc.ru#newsca.native_cache; yp=1672495029.cld.2261448#1672495029.brd.0699000036#1657951229.szm.1_25:1536x864:1536x726#1649228778.ygu.1#1649315189.csc.1#1649185034.mct.null#1649067766.nwcst.1648982400_43_3#1649538359.mcv.0#1649538359.mcl.1695r7s#1648994592.gpauto.55_796288:49_108795:100000:3:1648987392; _yasc=0fI9qmrQ9yhJAksSwGPy/B2yZivBy3AV+KOmc+dwdeaqDMPY/PIQ2D4H9LcyM/90m9UYHFAhICQOfA==; cycada=FDvjM1vMh8RHU7xa8j/ZL7aqTBF4gvSVGzF6KKxkNI0='
@@ -83,7 +83,7 @@ user_agent = UserAgent()
 
 
 headers = {
-    'cookie': 'news_lang=ru; nc=search-visits-per-week=1:1645123721000#tips=1645798458637%3Bfavorites-button:1; yandexuid=1979425991640958970; yuidss=1979425991640958970; ymex=1956318975.yrts.1640958975; _ym_uid=164095897515273997; is_gdpr=0; is_gdpr_b=CIayFBDgWSgC; L=ckx/fVN5cHZzbXJyfwJCVgZoAnpwAnByWio7IAR6Hlcr.1640959007.14843.312683.efc4def33cbaaa53ad367a64d4da598e; yandex_login=maxss.k2n; gdpr=0; mda=0; font_loaded=YSv1; my=YwA=; yandex_gid=141075; _ym_d=1646636780; _ym_isad=2; Session_id=3:1648930876.5.0.1640959007634:roHMsg:27.1.2:1|883187617.0.2|3:250351.906862.f9yBA7XrLdnkaUZVJ3D9weBtfCI; sessionid2=3:1648930876.5.0.1640959007634:roHMsg:27.1.2:1|883187617.0.2|3:250351.906862.f9yBA7XrLdnkaUZVJ3D9weBtfCI; i=P4LZY/kmCKVsJpcqBDFI9VCcTVeFozSw++sP2A3eqppbiKc+AYbF4FbB/BwKkk0q9d794Pi1mldi5aD0JNIyAujqROI=; sae=0:710DC4EF-8F5B-449A-8665-0C14D23D50E8:p:22.3.0.2430:w:d:RU:20211231; yabs-frequency=/5/0G0V09DlIM87GKbY/Uwi3wsa5ArFiHI40/; _yasc=nI/LzQHjTvQRb0qP7l8ZKzhNBODFqnYlUbLFvZzVMSxe2Z7zl3ihfI2WqB53dTJb4s1eKbDKSQkPug==; ys=svt.1#def_bro.1#ead.2FECB7CF#wprid.1648989185386508-3330288641589190498-vla1-4623-vla-l7-balancer-8080-BAL-6258#ybzcc.ru#newsca.native_cache; _ym_visorc=w; yp=1672495029.cld.2261448#1672495029.brd.0699000036#1657951229.szm.1_25:1536x864:1536x726#1649228778.ygu.1#1649315189.csc.1#1649185034.mct.null#1649067766.nwcst.1648982400_43_3#1649538359.mcv.0#1649538359.mcl.1695r7s#1649001192.gpauto.55_796288:49_108795:100000:3:1648993992; cycada=zyYNyq0LxmtTDlf5OyTyALaqTBF4gvSVGzF6KKxkNI0=',
+    'Cookie': 'news_lang=ru; nc=search-visits-per-week=1:1645123721000#tips=1645798458637;favorites-button:1; yandexuid=1979425991640958970; yuidss=1979425991640958970; ymex=1956318975.yrts.1640958975; _ym_uid=164095897515273997; is_gdpr=0; is_gdpr_b=CIayFBDgWSgC; L=ckx/fVN5cHZzbXJyfwJCVgZoAnpwAnByWio7IAR6Hlcr.1640959007.14843.312683.efc4def33cbaaa53ad367a64d4da598e; yandex_login=maxss.k2n; gdpr=0; mda=0; font_loaded=YSv1; my=YwA=; _ym_d=1646636780; i=P4LZY/kmCKVsJpcqBDFI9VCcTVeFozSw++sP2A3eqppbiKc+AYbF4FbB/BwKkk0q9d794Pi1mldi5aD0JNIyAujqROI=; yabs-frequency=/5/1W0V07ZIJM87GKbY/; sae=0:710DC4EF-8F5B-449A-8665-0C14D23D50E8:p:22.3.0.2430:w:d:RU:20211231; Session_id=3:1649526411.5.0.1640959007634:roHMsg:27.1.2:1|883187617.0.2|3:250679.349657.TeNA7_A_uIDkhq8VoiV1In4Krjw; sessionid2=3:1649526411.5.0.1640959007634:roHMsg:27.1.2:1|883187617.0.2|3:250679.349657.TeNA7_A_uIDkhq8VoiV1In4Krjw; ys=udn.cDptYXhzcy5rMm4=#wprid.1649532583296993-12934969148667915089-vla1-5154-vla-l7-balancer-8080-BAL-8136#c_chck.1616898368; _yasc=S2GX+LD5/CDBPYzSqiH9dp0iuBkacgDVJv+i0dY7adItfPdO8j4GFuQJkOXH8+/uRer8VrIHy3LDWA==; _ym_visorc=w; yp=1672495029.cld.2261448#1672495029.brd.0699000036#1657951229.szm.1_25:1536x864:1536x726#1649538359.mcv.5#1649538359.mcl.1695r7s#1649605199.gpauto.55_796288:49_108795:100000:3:1649597999; cycada=cGPw/+sK4DdmRGTkjF/+qbaqTBF4gvSVGzF6KKxkNI0=',
     'user-agent': UserAgent().random,
     'x-content-type-options': 'nosniff',
     'x-xss-protection': '1; mode = block',
