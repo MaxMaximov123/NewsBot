@@ -1,7 +1,7 @@
 token = "5256387436:AAHU4l8HhLRHBBV-1YZxYwcn1BLSstpvVcs"
 
-login = "maxss.k2n@yandex.ru"
-pasword = "Blanik2007"
+login = "***********"
+pasword = "*******"
 
 
 headers = {
