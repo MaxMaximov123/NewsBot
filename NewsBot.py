@@ -27,6 +27,13 @@ admin = 1387680086
 t = False
 
 
+
+for i in BotDB.get_id():
+    i = i[0]
+    BotDB.update_case(i, '')
+    print(f'удалил {i}')
+
+
 def birthday(id):
     day = str(int(datetime.date.today().strftime('%d')))
     month = str(int(datetime.date.today().strftime('%m')))
@@ -249,7 +256,11 @@ def callback(call):
             bot.send_message(call.message.chat.id, f'Акция <{k}> удалена')
 
         elif BotDB.get_status(call.message.chat.id) == 'invest_statis':
+            print(999)
+            pprint(stonks_)
+            pprint(call.data)
             data = list(map(str, stonks_[call.data]))
+            pprint(data)
             bot.send_message(call.message.chat.id, f'''Акция "{data[0]}", краткое "{data[1]}"
 Динамика в сравнении с прошлым торговым днем: {data[3]}%
 Риск этой позиции: {data[4]}
