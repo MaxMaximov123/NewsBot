@@ -27,13 +27,6 @@ admin = 1387680086
 t = False
 
 
-
-for i in BotDB.get_id():
-    i = i[0]
-    BotDB.update_case(i, '')
-    print(f'удалил {i}')
-
-
 def birthday(id):
     day = str(int(datetime.date.today().strftime('%d')))
     month = str(int(datetime.date.today().strftime('%m')))

@@ -46,7 +46,6 @@ def stonks():
     lot = []
     try:
         a = cont['data']['instruments']['list']['results']
-        print(len(a))
         for i in a:
             name.append(i['displayName'])
             logoId.append(i['ticker'])
