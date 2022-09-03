@@ -19,7 +19,7 @@ Beta = False
 if Beta:
     bot = telebot.TeleBot(token1)
 else:
-    bot = telebot.TeleBot(token)
+    bot = telebot.TeleBot(token2)
 BotDB = BotDB()
 btns = list(links.keys())
 htmls = {}
