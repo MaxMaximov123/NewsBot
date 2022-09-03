@@ -12,7 +12,7 @@ def stonks():
         'Cache-Control': 'max-age=0',
         'Connection': 'keep-alive',
         'Host': 'invest.yandex.ru',
-        'If-None-Match': 'W/"446cb-XBOh/QJACgpX8eltc7AWg8ARV3c"',
+        'If-None-Match': 'W/"44698-SNdsxQql0g6WRYKdwFb7jWm4aWo"',
         'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="102", "Yandex";v="22"',
         'sec-ch-ua-mobile': '?0',
         'sec-ch-ua-platform': '"Windows"',
@@ -21,9 +21,9 @@ def stonks():
         'Sec-Fetch-Site': 'same-origin',
         'Sec-Fetch-User': '?1',
         'Upgrade-Insecure-Requests': '1',
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.148 YaBrowser/22.7.2.899 Yowser/2.5 Safari/537.36',
-        'Cookie': 'yandexuid=1979425991640958970; yuidss=1979425991640958970; ymex=1956318975.yrts.1640958975; _ym_uid=164095897515273997; is_gdpr=0; is_gdpr_b=CIayFBDgWSgC; L=ckx/fVN5cHZzbXJyfwJCVgZoAnpwAnByWio7IAR6Hlcr.1640959007.14843.312683.efc4def33cbaaa53ad367a64d4da598e; yandex_login=maxss.k2n; gdpr=0; my=YwA=; mda=0; yandex_gid=141075; _ym_d=1657999835; skid=5722487791658000552; sae=0:710DC4EF-8F5B-449A-8665-0C14D23D50E8:p:22.7.2.899:w:d:RU:20211231; yabs-frequency=/5/2m0Z0CR2wsAe5DDY/; cycada=EAe8j3MLNd4V3whoMNWAQSfKy+ZxuPsLMvq5e/TxuI4=; ys=svt.1#def_bro.1#ead.2FECB7CF#wprid.1659870280624392-7467880278375897754-sas6-5261-bf6-sas-l7-balancer-8080-BAL-457#ybzcc.ru#newsca.native_cache; i=UdhLa3rD6iH/7Ty7RH3YoNcs3nCrb4rozT35KignVTkMRqv09BM7oK777IQdLPxkfkJmVcl3qQhi4P6bcVSwvE+N/yI=; Session_id=3:1659870292.5.0.1640959007634:roHMsg:27.1.2:1|883187617.0.2|3:10256407.393485.0Fu41h6Z4lUD_klMk8ujWPJvCyc; sessionid2=3:1659870292.5.0.1640959007634:roHMsg:27.1.2:1.499:1|883187617.0.2|3:10256407.452383.k9dOKhBq4tOrWvq-2n03kWZBQSw; _ym_isad=2; _ym_visorc=b; yp=1659956613.uc.ru#1659956613.duc.ru#1681416026.cld.2261448#1681416026.brd.0699000036#1660591832.ygu.1#1973359832.skin.d#1660678244.csc.1#1659878013.gpauto.55_877659:49_746181:140:1:1659870813#1660475091.mcv.6#1660475091.mcl.1695r7s#1660475092.szm.1_125:1536x864:1707x833; _yasc=We33CXVBOPQt0+IwU87W3HsyahApucvV74uhunapa7nv6FyWJTwzL8+XYmJt0kfQxaytfkyF'
-        }
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/102.0.5005.167 YaBrowser/22.7.3.822 Yowser/2.5 Safari/537.36 ',
+        'Cookie': 'yandexuid=1979425991640958970; yuidss=1979425991640958970; ymex=1956318975.yrts.1640958975; _ym_uid=164095897515273997; L=ckx/fVN5cHZzbXJyfwJCVgZoAnpwAnByWio7IAR6Hlcr.1640959007.14843.312683.efc4def33cbaaa53ad367a64d4da598e; yandex_login=maxss.k2n; gdpr=0; my=YwA=; mda=0; _ym_d=1657999835; skid=5722487791658000552; is_gdpr=0; is_gdpr_b=CPDcKRCxhQEoAg==; sae=0:710DC4EF-8F5B-449A-8665-0C14D23D50E8:p:22.7.3.822:w:d:RU:20211231; i=/M6l1RbNpVwPpX973YuLoMf4gHSF8yA+NWMau8k1Ei0FCjfNKM+ht9+0EHrLSG7L/uMDpw4cI2G4s3FDyAeQUEMJmYw=; cycada=7FS5Gpa9WN4JvHiHeE0KbNslHlEpBx3sof2EZGMuFWQ=; yabs-frequency=/5/000b0000003-WmnZ/IkQnfDqwfKOSI2u0/; _yasc=6kjRigR64BEW3emuU6tor83WK9ajgsjR+sOMn9igbT1LOAbKL3JU7QoY7sLxJDEFBrvkIdJg; yp=1662318605.uc.fr#1662318605.duc.ru#1681416026.cld.2261448#1681416026.brd.0699000036#1973359832.skin.d#1662239544.gpauto.55_877659:49_746193:140:1:1662232344#1662295820.szm.1_125:1536x864:1707x833; ys=svt.1#def_bro.1#wprid.1661764558104877-2782262031543887677-sas3-0752-6e1-sas-l7-balancer-8080-BAL-1039#ybzcc.ru#newsca.native_cache#ead.2FECB7CF; Session_id=3:1662232581.5.0.1640959007634:roHMsg:27.1.2:1|883187617.0.2|3:10257721.82800.myGfjYukV_vrUHnpC1o7HPKh_8Q; sessionid2=3:1662232581.5.0.1640959007634:roHMsg:27.1.2:1.499:1|883187617.0.2|3:10257721.527740.naMwCUolQXw_YLwVyD5M0stGl-8; _ym_isad=1; _ym_visorc=w'
+    }
     r = requests.get('https://invest.yandex.ru/catalog/stock/', headers=head)
     # pprint(r.headers)
     html = str(BS(r.content, "html.parser").contents)
@@ -40,7 +40,7 @@ def stonks():
                'x-tanker-branch': 'master',
                'x-visible-uid': '883187617',
                'x-csrf-token': a,
-               'Cookie': 'yandexuid=1979425991640958970; yuidss=1979425991640958970; ymex=1956318975.yrts.1640958975; _ym_uid=164095897515273997; is_gdpr=0; is_gdpr_b=CIayFBDgWSgC; L=ckx/fVN5cHZzbXJyfwJCVgZoAnpwAnByWio7IAR6Hlcr.1640959007.14843.312683.efc4def33cbaaa53ad367a64d4da598e; yandex_login=maxss.k2n; gdpr=0; my=YwA=; mda=0; yandex_gid=141075; _ym_d=1657999835; skid=5722487791658000552; sae=0:710DC4EF-8F5B-449A-8665-0C14D23D50E8:p:22.7.2.899:w:d:RU:20211231; yabs-frequency=/5/2m0Z0CR2wsAe5DDY/; cycada=EAe8j3MLNd4V3whoMNWAQSfKy+ZxuPsLMvq5e/TxuI4=; ys=svt.1#def_bro.1#ead.2FECB7CF#wprid.1659870280624392-7467880278375897754-sas6-5261-bf6-sas-l7-balancer-8080-BAL-457#ybzcc.ru#newsca.native_cache; i=UdhLa3rD6iH/7Ty7RH3YoNcs3nCrb4rozT35KignVTkMRqv09BM7oK777IQdLPxkfkJmVcl3qQhi4P6bcVSwvE+N/yI=; Session_id=3:1659870292.5.0.1640959007634:roHMsg:27.1.2:1|883187617.0.2|3:10256407.393485.0Fu41h6Z4lUD_klMk8ujWPJvCyc; sessionid2=3:1659870292.5.0.1640959007634:roHMsg:27.1.2:1.499:1|883187617.0.2|3:10256407.452383.k9dOKhBq4tOrWvq-2n03kWZBQSw; _ym_isad=2; _ym_visorc=b; yp=1659956613.uc.ru#1659956613.duc.ru#1681416026.cld.2261448#1681416026.brd.0699000036#1660591832.ygu.1#1973359832.skin.d#1660678244.csc.1#1659878013.gpauto.55_877659:49_746181:140:1:1659870813#1660475091.mcv.6#1660475091.mcl.1695r7s#1660475092.szm.1_125:1536x864:1707x833; _yasc=We33CXVBOPQt0+IwU87W3HsyahApucvV74uhunapa7nv6FyWJTwzL8+XYmJt0kfQxaytfkyF'
+               'Cookie': 'yandexuid=1979425991640958970; yuidss=1979425991640958970; ymex=1956318975.yrts.1640958975; _ym_uid=164095897515273997; L=ckx/fVN5cHZzbXJyfwJCVgZoAnpwAnByWio7IAR6Hlcr.1640959007.14843.312683.efc4def33cbaaa53ad367a64d4da598e; yandex_login=maxss.k2n; gdpr=0; my=YwA=; mda=0; _ym_d=1657999835; skid=5722487791658000552; is_gdpr=0; is_gdpr_b=CPDcKRCxhQEoAg==; sae=0:710DC4EF-8F5B-449A-8665-0C14D23D50E8:p:22.7.3.822:w:d:RU:20211231; i=/M6l1RbNpVwPpX973YuLoMf4gHSF8yA+NWMau8k1Ei0FCjfNKM+ht9+0EHrLSG7L/uMDpw4cI2G4s3FDyAeQUEMJmYw=; cycada=7FS5Gpa9WN4JvHiHeE0KbNslHlEpBx3sof2EZGMuFWQ=; yabs-frequency=/5/000b0000003-WmnZ/IkQnfDqwfKOSI2u0/; _yasc=6kjRigR64BEW3emuU6tor83WK9ajgsjR+sOMn9igbT1LOAbKL3JU7QoY7sLxJDEFBrvkIdJg; yp=1662318605.uc.fr#1662318605.duc.ru#1681416026.cld.2261448#1681416026.brd.0699000036#1973359832.skin.d#1662239544.gpauto.55_877659:49_746193:140:1:1662232344#1662295820.szm.1_125:1536x864:1707x833; ys=svt.1#def_bro.1#wprid.1661764558104877-2782262031543887677-sas3-0752-6e1-sas-l7-balancer-8080-BAL-1039#ybzcc.ru#newsca.native_cache#ead.2FECB7CF; Session_id=3:1662232581.5.0.1640959007634:roHMsg:27.1.2:1|883187617.0.2|3:10257721.82800.myGfjYukV_vrUHnpC1o7HPKh_8Q; sessionid2=3:1662232581.5.0.1640959007634:roHMsg:27.1.2:1.499:1|883187617.0.2|3:10257721.527740.naMwCUolQXw_YLwVyD5M0stGl-8; _ym_isad=1; _ym_visorc=w'
                }
 
     json_ = {"operationName": "CatalogContentForNormal",
@@ -79,5 +79,5 @@ def stonks():
     return list(zip(name, logoId, yeardinamic, daydinamic, dang, price, cur, lot))
 
 
-# pprint(len(sorted(stonks())))
+# pprint(sorted(stonks()))
 # stonks()
