@@ -250,8 +250,8 @@ def callback(call):
 
         elif BotDB.get_status(call.message.chat.id) == 'invest_statis':
             print(999)
-            pprint(stonks_)
-            pprint(call.data)
+            # pprint(stonks_)
+            # pprint(call.data)
             data = list(map(str, stonks_[call.data]))
             pprint(data)
             bot.send_message(call.message.chat.id, f'''Акция "{data[0]}", краткое "{data[1]}"
