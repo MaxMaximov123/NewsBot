@@ -1,4 +1,4 @@
-token = "5256387436:AAHU4l8HhLRHBBV-1YZxYwcn1BLSstpvVcs"
+token = ""
 
 login = "***********"
 pasword = "*******"
