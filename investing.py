@@ -61,22 +61,25 @@ def stonks():
     price = []
     cur = []
     lot = []
+    country = []
     try:
         a = cont['data']['instruments']['list']['results']
         for i in a:
+            country.append('russia')
             name.append(i['displayName'])
             logoId.append(i['ticker'])
             yeardinamic.append(i['marketData']['percentChange'])
             lot.append(i['marketData']['lotSize'])
-            daydinamic.append(round(i['marketData']['dailyPercentChange'], 2))
-            dang.append(int(i['stockRiskScoreFormatted']) if i.get('stockRiskScoreFormatted', 0) else 11)
+            daydinamic.append(str(round(i['marketData']['dailyPercentChange'], 2)))
+            dang.append(str(int(i['stockRiskScoreFormatted']) if i.get('stockRiskScoreFormatted', 0) else 11))
             cur.append(i['marketData']['currencyCode'])
             price.append(i['marketData']['price'])
     except Exception as er:
         pass
         pprint(er)
     # pprint(name)
-    return list(zip(name, logoId, yeardinamic, daydinamic, dang, price, cur, lot))
+    # list(zip(name, logoId, yeardinamic, daydinamic, dang, price, cur, lot, [country] * len(name)))
+    return list(zip(name, logoId, yeardinamic, daydinamic, dang, price, cur, lot, country))
 
 
 # pprint(sorted(stonks()))

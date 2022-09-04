@@ -10,9 +10,11 @@ import time
 from threading import Thread
 from fake_useragent import UserAgent
 import json
-from investing import stonks
+# from investing import stonks
+from investing1 import stonks
 from pprint import pprint
 import datetime
+from tqdm import tqdm
 
 
 Beta = False
@@ -110,7 +112,7 @@ def get_news(url):
 
 def save_html():
     global htmls
-    for i in urls:
+    for i in tqdm(urls):
         try:
             news, ur = get_news(i)
             if len(news) > 0 < len(ur):
@@ -254,10 +256,16 @@ def callback(call):
             # pprint(call.data)
             data = list(map(str, stonks_[call.data]))
             pprint(data)
+#             bot.send_message(call.message.chat.id, f'''Акция "{data[0]}", краткое "{data[1]}"
+# Динамика в сравнении с прошлым торговым днем: {data[3]}%
+# Риск этой позиции: {data[4]}
+# Стоимость одной акции: {data[5]} {data[6]}''')
             bot.send_message(call.message.chat.id, f'''Акция "{data[0]}", краткое "{data[1]}"
-Динамика в сравнении с прошлым торговым днем: {data[3]}%
-Риск этой позиции: {data[4]}
-Стоимость одной акции: {data[5]} {data[6]}''')
+Динамика в сравнении с прошлым торговым днем: {data[3]}{'%' if data[3][-1] != '%' else ''} {data[2]}
+{"Рекомендуемые действия" if not data[-2].isdigit() else "Уровень риска"}: {data[4]}
+Стоимость одной акции: {data[5]}; {data[6]}
+Страна регистрации компании: {data[-1]}
+Сфера деятельности: {data[4] if not data[4].isdigit() else 'Неизвестно'}''')
         elif call.data == "skip":
             send_news(call.message.chat.id, BotDB.get_topic(call.message.chat.id),
                       BotDB.get_article(call.message.chat.id))
